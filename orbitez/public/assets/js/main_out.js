@@ -1,3 +1,6 @@
+// Constants
+const FOOD_SKIN_SRC = "img/game-food.png";
+
 (function () {
     'use strict';
 
@@ -1447,6 +1450,17 @@
                 ctx.globalAlpha = Math.min(Date.now() - this.born, 120) / 120;
             }
 
+            // Skins for food
+            if (this.food) {
+                const skinImage = loadedSkins.get(FOOD_SKIN_SRC);
+                ctx.save(); // for the clip
+                ctx.clip();
+                ctx.drawImage(skinImage, this.x - this.s * 2, this.y - this.s * 2,
+                    this.s * 4, this.s * 4);
+                ctx.restore();
+                return;
+            }
+
             const skinImage = loadedSkins.get(this.skin);
             if (settings.showSkins && this.skin && skinImage &&
                 skinImage.complete && skinImage.width && skinImage.height) {
@@ -1669,7 +1683,17 @@
         camera.userZoom = Math.min(camera.userZoom, 4);
     }
 
-    window.init = () => {
+    const loadSkin = async (skinLink) => {
+        const skinImageElement = new Promise((resolve) => {
+            const imageElement = new Image();
+            imageElement.src = skinLink;
+            imageElement.onload = () => resolve(imageElement);
+        });
+
+        loadedSkins.set(skinLink, await skinImageElement);
+    };
+
+    window.init = async () => {
        
         mainCanvas = document.getElementById('canvas');
         mainCtx = mainCanvas.getContext('2d')
@@ -1753,6 +1777,9 @@
                 touchCircle.hide();
             }
         });
+
+        // Loading initial skins
+        await loadSkin(FOOD_SKIN_SRC);
 
         gameReset();
         showESCOverlay();
