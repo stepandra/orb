@@ -52,6 +52,8 @@ class UpdateNodes {
                 flags |= 0x10; // isAgitated
             if (node.type == 3)
                 flags |= 0x20; // isEjected
+            if (node.type == 1)
+                flags |= 0x80; // isFood
             writer.writeUInt8(flags >>> 0); // Flags
             writer.writeUInt16(0); // Name
         }
@@ -81,6 +83,8 @@ class UpdateNodes {
                 flags |= 0x10; // isAgitated
             if (node.type == 3)
                 flags |= 0x20; // isEjected
+            if (node.type == 1)
+                flags |= 0x80; // isFood
             writer.writeUInt8(flags >>> 0); // Flags
             if (cellName != null)
                 writer.writeBytes(cellName); // Name
@@ -116,6 +120,8 @@ class UpdateNodes {
                 flags |= 0x10; // isAgitated
             if (node.type == 3)
                 flags |= 0x20; // isEjected
+            if (node.type == 1)
+                flags |= 0x80; // isFood
             writer.writeUInt8(flags >>> 0); // Flags
             writer.writeUInt16(0); // Cell Name
         }
@@ -149,6 +155,8 @@ class UpdateNodes {
                 flags |= 0x10; // isAgitated
             if (node.type == 3)
                 flags |= 0x20; // isEjected
+            if (node.type == 1)
+                flags |= 0x80
             writer.writeUInt8(flags >>> 0); // Flags
             if (flags & 0x04)
                 writer.writeBytes(skinName); // Skin Name in UTF8
@@ -184,6 +192,8 @@ class UpdateNodes {
                 flags |= 0x10; // isAgitated
             if (node.type == 3)
                 flags |= 0x20; // isEjected
+            if (node.type == 1)
+                flags |= 0x80; // isFood
             writer.writeUInt8(flags >>> 0); // Flags
             if (flags & 0x02) {
                 var color = node.color;
@@ -222,6 +232,8 @@ class UpdateNodes {
                 flags |= 0x10; // isAgitated
             if (node.type == 3)
                 flags |= 0x20; // isEjected
+            if (node.type == 1)
+                flags |= 0x80; // isFood
             writer.writeUInt8(flags >>> 0); // Flags
             if (flags & 0x02) {
                 var color = node.color;
