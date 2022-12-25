@@ -1,5 +1,6 @@
 // Constants
 const FOOD_SKIN_SRC = "img/game-food.png";
+const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
 
 (function () {
     'use strict';
@@ -604,6 +605,9 @@ const FOOD_SKIN_SRC = "img/game-food.png";
 
     const knownSkins = new Map();
     const loadedSkins = new Map();
+
+    const animatedVirus = new VirusAnimation();
+    
     const macroCooldown = 1000 / 7;
     const camera = {
         x: 0,
@@ -1450,7 +1454,17 @@ const FOOD_SKIN_SRC = "img/game-food.png";
                 ctx.globalAlpha = Math.min(Date.now() - this.born, 120) / 120;
             }
 
-            // Skins for food
+            // Skins for food  & viruses
+            if (this.jagged) {
+                const skinFrameCanvas = animatedVirus.currentFrame;
+                ctx.save(); // for the clip
+                ctx.clip();
+                ctx.drawImage(skinFrameCanvas, this.x - this.s, this.y - this.s,
+                    this.s * 2, this.s * 2);
+                ctx.restore();
+                return;
+            }
+
             if (this.food) {
                 const skinImage = loadedSkins.get(FOOD_SKIN_SRC);
                 ctx.save(); // for the clip
@@ -1780,6 +1794,7 @@ const FOOD_SKIN_SRC = "img/game-food.png";
 
         // Loading initial skins
         await loadSkin(FOOD_SKIN_SRC);
+        await animatedVirus.loadGif(VIRUS_SKIN_SRC);
 
         gameReset();
         showESCOverlay();
