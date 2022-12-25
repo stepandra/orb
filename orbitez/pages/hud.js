@@ -11,6 +11,7 @@ import { CONTRACT_ADDRESS } from "../constants";
 import { renderInner } from "@components/agar-client/agar-client-html";
 import InGameLeaderboard from "@components/InGameLeaderboard/InGameLeaderboard";
 import { route } from "next/dist/server/router";
+import useVirusAnimation from "@hooks/useVirusAnimation";
 
 import { useServerContext } from "@context/ServerContext";
 import RouteGuard from "@components/RouteGuard/RouteGuard";
