@@ -23,43 +23,6 @@
     }
 }
 
-.gameTimer {
-	position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-	display: block;
-	width: 358px;
-    text-align: center;
-
-    pointer-events: none;
-
-	&__num {
-		margin-bottom: 7px;
-		color: #5B6483;
-		font-weight: 600;
-		font-size: 18px;
-		line-height: 192%;
-	}
-
-    &__list {
-        display: flex;
-        justify-content: center;
-    }
-
-	&__item {
-		width: 10px;
-		height: 7px;
-		margin: 0 2px;
-		background: rgba(84, 90, 174, 0.3);
-
-		&--active {
-			background: #CEA105;
-		}
-	}
-}
-
-
 .chatInput {
     position: absolute;
     left: 10px;
