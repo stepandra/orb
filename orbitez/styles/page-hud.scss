@@ -1,0 +1,75 @@
+.hud {
+	position: fixed;
+	z-index: 0;
+}
+
+.mass {
+    display: flex;
+    align-items: flex-start;
+    color: #BFC5D9;
+    font-size: 18px;
+    line-height: 133%;
+
+    &::before {
+        content: url('../public/img/icon-mass.png');
+		width: 14px;
+		min-height: 22px;
+        margin-inline-end: 15px;
+    }
+}
+
+.gameTimer {
+	position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+	display: block;
+	width: 358px;
+    text-align: center;
+
+    pointer-events: none;
+
+	&__num {
+		margin-bottom: 7px;
+		color: #5B6483;
+		font-weight: 600;
+		font-size: 18px;
+		line-height: 192%;
+	}
+
+    &__list {
+        display: flex;
+        justify-content: center;
+    }
+
+	&__item {
+		width: 10px;
+		height: 7px;
+		margin: 0 2px;
+		background: rgba(84, 90, 174, 0.3);
+
+		&--active {
+			background: #CEA105;
+		}
+	}
+}
+
+
+.chatInput {
+    position: absolute;
+    left: 10px;
+    bottom: 35px;
+    width: 300px;
+    height: 30px;
+    background: rgba(0, 0, 0, .2);
+    color: #fff;
+    font-family: "Ubuntu";
+    border: 0px;
+    outline: none;
+    transition: all .5s ease-in-out;
+    z-index: 10;
+
+    &:focus {
+        background: rgba(0, 0, 0, .5);
+    }
+}

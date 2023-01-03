@@ -1,0 +1,118 @@
+.leaderBoard {
+    margin-top: 30px;
+    margin-bottom: 50px;
+
+    &__inner {
+		position: relative;
+        display: grid;
+        grid-template-columns: minmax(400px, 650px) 1fr minmax(250px, 350px);
+        grid-template-areas: "left center right";
+        gap: 20px;
+        height: 100%;
+        padding: 50px 20px;
+    }
+
+    &__left {
+        grid-area: left;
+    }
+
+    &__center {
+        grid-area: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 40px 0;
+    }
+
+    &__right {
+        grid-area: right;
+        display: flex;
+        align-items: center;
+    }
+
+    &__btn {
+        margin-top: 80px;
+    }
+
+	&__bg {
+		z-index: -1;
+	}
+
+	&__planetName {
+		position: absolute;
+        transform: translateX(-50%);
+		left: 55%;
+		top: 5px;
+		color: #FFE191;
+		font-weight: 700;
+		font-size: 20px;
+		line-height: 133%;
+	
+		span {
+			margin-inline-end: 15px;
+			color: #FFF;
+			font-size: 22px;
+		}
+	}
+
+	&__share {
+		position: absolute;
+		right: 11%;
+		bottom: -4px;
+		display: flex;
+		align-items: center;
+		color: #FFF;
+		// font-weight: 700;
+		font-size: 20px;
+		line-height: 133%;
+		cursor: pointer;
+
+		&::before {
+			content: url('/img/icon-share.png');
+			display: block;
+			width: 25px;
+			min-height: 28px;
+			margin-inline-end: 11px;
+		}
+	}
+}
+
+
+
+@media (max-width: 1440px) { //------------------------------------------------------------------------------------ 1440
+	.leaderBoard {
+        &__share {
+            right: 10%;
+        }
+    }
+}
+
+
+@media (max-width: 1200px) { //------------------------------------------------------------------------------------ 1200
+	.leaderBoard {
+        &__inner {
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas: 
+            "left left"
+            "center center"
+            "right right";
+            background: linear-gradient(120.88deg, rgba(39, 37, 73, 0.46) 17.16%, rgba(39, 37, 73, 0.2) 112.09%);
+            //border: 1px solid #222222;
+        }
+
+        &__bg {display: none;}
+        &__share {display: none;}
+        &__planetName {display: none;}
+    }
+}
+
+.leaderBoard__center {
+    height: 100%;
+}
+
+.leaderBoard__btn {
+    position: absolute;
+    bottom: -5rem;
+    cursor: not-allowed;
+}

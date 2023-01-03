@@ -1,0 +1,53 @@
+.lp {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+
+    &__text {
+        padding: 0 50px;
+        text-align: center;
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    &__btn {
+        margin-top: 50px;
+    }
+
+    &__bg {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: -1;
+    }
+
+    &__video {
+        min-height: 100%;
+    }
+
+    &__overlay {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        z-index: 0;
+    }
+}
+
+
+
+@media (max-width: 768px) {
+    .lp {
+        &__text {
+            padding: 20px 0 0;
+            font-size: 22px;
+        }
+    }
+}

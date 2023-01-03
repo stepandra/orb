@@ -1,0 +1,209 @@
+.overlay {
+	opacity: 0;
+    display: none;
+    //pointer-events: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(3px);
+    transition: opacity 0.5s ease 0s;
+    z-index: 199;
+
+    &:target {
+        opacity: 1;
+        //pointer-events: auto;
+        display: block;
+        overflow-y: auto;
+    }
+}
+
+.popUp {
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	width: 100%;
+	max-width: 868px;
+	padding: 60px 40px;
+	border-top: 2px solid #A1A8BC;
+	border-bottom: 2px solid #A1A8BC;
+	background-color: rgba(42, 46, 94, 0.7);
+	color: white;
+	text-align: center;
+    z-index: 200;
+
+	&--connect {
+        opacity: 0;
+		top: 14%;
+	}
+
+	&__close {
+		content: url('../public/img/icon-close.png');
+		position: absolute;
+		top: 36px;
+		right: 36px;
+		display: block;
+		width: 43px;
+		min-height: 34px;
+		cursor: pointer;
+	}
+
+    &__content {
+        margin: 40px 0;
+        padding: 40px 0 50px;
+        background-image: url('../public/img/bg-pop-up-texture.png');
+    }
+
+	&__title {
+		margin-bottom: 15px;
+        font-size: 26px;
+        line-height: 133%;
+	}
+
+	&__progressBar {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 24px;
+	}
+
+	&__barItem {
+		width: 12px;
+		height: 6px;
+		margin: 0 2px;
+		background-color: rgba(22, 16, 41, 0.65);
+
+		&--active {
+			background-color: #FFF;
+		}
+	}
+
+	&__countPlayers {
+		margin-bottom: 32px;
+		font-weight: 700;
+		font-size: 22px;
+		line-height: 133%;
+	}
+
+	&__players {
+		margin-bottom: 40px;
+	}
+
+	&__playerName {
+		color: #BFC5D9;
+		font-size: 20px;
+		line-height: 155.5%;
+	}
+
+	&__instructions {
+		margin: 30px auto;
+		padding: 0 0 20px;
+		// border-top: 1px solid #eee;
+		border-bottom: 1px solid #eee;
+	}
+
+	&__leaveBlock {
+		position: absolute;
+		top: 56px;
+		right: 20px;
+	}
+
+
+    // You Are Dead pop-up. 
+    // ID-pop-up: deadPlayer
+    &__text {
+        color: #BFC5D9;
+    }
+
+    &__timer {
+        margin-top: 15px;
+        font-size: 28px;
+        line-height: 133%;
+    }
+}
+
+
+.gamePopUp {
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	width: 100%;
+	max-width: 1305px;
+	color: white;
+	text-align: center;
+    z-index: 200;
+
+    &__bg {
+        span {
+            z-index: -1; 
+        }
+	}
+
+    &__title {
+        margin-top: -12px;
+        margin-bottom: 55px;
+        font-weight: 700;
+        font-size: 26px;
+        line-height: 133%;
+    }
+
+    &__result {
+        margin-bottom: 8px;
+        font-size: 26px;
+        line-height: 133%;
+    }
+
+    &__number {
+        font-weight: 700;
+        font-size: 32px;
+        line-height: 133%;
+    }
+
+    &__numPlus {
+        color: #43C722;
+        font-size: 20px;
+        line-height: 133%;
+
+        &--lose {
+            color: #FF6636;
+        }
+    }
+
+    &__content {
+        display: flex;
+        justify-content: space-between;
+        margin: 45px 24px 55px;
+    }
+
+    &__block {
+        width: 49.5%;
+        padding: 90px 100px 60px;
+        background-color: #00000040;
+    }
+
+    &__row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__btn {
+        margin-bottom: 75px;
+    }
+
+    &__share {
+        display: flex;
+        justify-content: center;
+        margin-bottom: -8px;
+
+        &::before {
+			content: url('../public/img/icon-share.png');
+			display: block;
+			width: 25px;
+			min-height: 28px;
+			margin-inline-end: 11px;
+		}
+    }
+}

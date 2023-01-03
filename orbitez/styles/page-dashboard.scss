@@ -1,0 +1,111 @@
+.dashboard {
+	display: grid;
+	grid-template-columns: minmax(250px, 350px) 1fr minmax(250px, 350px);
+	grid-template-rows: minmax(63vh, 600px) 60px;
+	row-gap: 24px;
+	grid-template-areas:
+	"left center right";
+	margin-bottom: 50px;
+
+	&__left {
+		grid-area: left;
+		margin-top: 10vh;
+	}
+
+	&__center {
+		grid-area: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		// background-image: url('/img/bg-planet.png');
+	}
+
+	&__right {
+		grid-area: right;
+		margin-top: 10vh;
+	}
+}
+
+
+
+@media (max-width: 1600px) { //------------------------------------------------------------------------------------ 1600
+	.dashboard {
+		&__center {
+			justify-content: space-around;
+			padding-top: 0;
+			background-image: none;
+		}
+	}
+}
+
+
+@media (max-width: 1280px) { //------------------------------------------------------------------------------------ 1280
+	// .page {
+	// 	&__left {width: 260px;}
+	// 	&__center {width: calc(100% - 520px);}
+	// 	&__right {width: 260px;}
+	// }
+}
+
+@media (max-width: 1200px) { //------------------------------------------------------------------------------------ 1200
+	.dashboard {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto;
+		grid-template-areas:
+		"left right"
+		"center center";
+		column-gap: 24px;
+
+		&__left {
+			margin-top: 0;
+		}
+		&__center {
+			padding-top: 4%;
+			padding-bottom: 4%;
+		}
+		&__right {
+			margin: 0;
+		}
+	}
+}
+
+
+@media (max-width: 768px) { //------------------------------------------------------------------------------------ 768
+	// .page {
+	// 	flex-wrap: wrap;
+	// }
+}
+
+@media (max-width: 640px) { //------------------------------------------------------------------------------------ 640
+	.dashboard {
+		grid-template-columns: 1fr;
+		grid-template-areas:
+		"left"
+		"center"
+		"right";
+	}
+}
+
+.dashboard__center {
+	position: relative;
+	height: 100%;
+	margin-top: 1rem;
+	max-height: 500px;
+}
+
+.planet {
+	position: absolute;
+	height: 100%;
+}
+
+.planet_outline {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	object-position: center;
+}

@@ -1,0 +1,13 @@
+.planet {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	&--bgCircle { // TODO: need refactoring
+		width: 618px; // Temp
+        height: 618px; // Temp
+        margin-bottom: 30px; // Temp
+        background-image: url('../../public/img/temp-bg-planet.png');
+	}
+}

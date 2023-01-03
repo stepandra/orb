@@ -1,0 +1,6 @@
+client
+.history
+.vscode
+.env
+/node_modules
+/.taq

@@ -1,0 +1,19 @@
+# Prevent possible banned IP address leak
+src/ipbanlist.txt
+
+# Prevent tls keys from being leaked
+keys/cert.pem
+keys/key.pem
+keys/chain.pem
+keys/fullchain.pem
+
+# Botname file
+src/ai/botnames.txt
+# Config file
+src/config.js
+
+# Node modules
+node_modules
+
+# Package-lock
+package-lock.json

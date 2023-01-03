@@ -1,0 +1,49 @@
+.playersList {
+
+    &__list {
+        position: relative;
+        margin-bottom: 16px;
+        padding: 15px 40px;
+        background: linear-gradient(120.88deg, rgba(39, 37, 73, 0.46) 17.16%, rgba(39, 37, 73, 0.2) 112.09%);
+
+        &--gen {
+            &::before {
+                content: '';
+                position: absolute;
+                transform: translateY(-50%);
+                top: 50%;
+                left: 0;
+                display: block;
+                width: 3px;
+                height: 50%;
+                background-color: #A1A8BC;
+            }
+        }
+    }
+
+    &__item {
+        display: flex;
+        margin: 3px 0;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 192%;
+
+        &--active {
+            position: relative;
+            color: #FFE191;
+
+            &::before {
+				content: url('../../public/img/arrow-right.svg');
+                line-height: normal;
+				position: absolute;
+				top: 50%;
+				left: -1.25rem;
+				transform: translateY(-50%);
+			}
+        }
+    }
+
+    &__num {
+        margin-inline-end: 10px;
+    }
+}

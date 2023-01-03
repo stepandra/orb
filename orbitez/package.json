@@ -1,0 +1,45 @@
+{
+  "name": "orbitez",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "staging": "NODE_ENV=production PORT=5454 node server.js",
+    "lint": "eslint ./components/** ./pages/** -c .eslintrc.json --ext js,jsx",
+    "lint-fix": "eslint ./components/** ./pages/** -c .eslintrc.json --fix --ext js,jsx"
+  },
+  "dependencies": {
+    "@airgap/beacon-sdk": "3.1.3",
+    "@ledgerhq/hw-transport-u2f": "^5.36.0-deprecated",
+    "@microsoft/signalr": "^6.0.1",
+    "@ramonak/react-progress-bar": "^4.4.0",
+    "@taquito/beacon-wallet": "12.1.0",
+    "@taquito/ledger-signer": "^12.1.1",
+    "@taquito/signer": "12.1.0",
+    "@taquito/taquito": "12.1.0",
+    "@taquito/tezbridge-signer": "12.1.0",
+    "@tezos-contrib/nft-hooks": "^0.0.1",
+    "axios": "^0.24.0",
+    "bignumber.js": "^9.0.2",
+    "fs": "^0.0.1-security",
+    "memory-cache": "^0.2.0",
+    "next": "12.0.7",
+    "node-cache": "^5.1.2",
+    "node-forge": "1.3.1",
+    "react": "17.0.2",
+    "react-bootstrap": "^2.4.0",
+    "react-dom": "17.0.2",
+    "web3": "^1.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-next": "12.0.7",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "sass": "^1.54.2"
+  }
+}

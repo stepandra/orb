@@ -1,0 +1,121 @@
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+
+	&__mass, &__linkBlock {
+		display: flex;
+		align-items: center;
+	}
+
+	&--hud {
+		> :first-child, > :last-child {
+			flex-grow: 1;
+			flex-basis: 0;
+		}
+		align-items: flex-start;
+		pointer-events: none;
+		position: fixed;
+		inset: 0 0 auto;
+		z-index: 9;
+
+		.ingame-leaderboard-wrapper {
+			display: flex;
+			justify-content: flex-start;
+		};
+	
+		.linkBlock-wrapper {
+			display: flex;
+			justify-content: flex-end;
+		};
+	}
+
+	&__linkBlock {
+		display: flex;
+		pointer-events: all;
+		min-width: 200px;
+	}
+
+	&__link {
+		margin-inline-start: 12px;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+}
+
+.money {
+	display: flex;
+	flex-wrap: wrap;
+
+	&__item {
+		display: flex;
+		margin: 15px 20px;
+		font-weight: 500;
+		font-size: 20px;
+		line-height: 133%;
+		color: #FFFFFF;
+	}
+
+	&__name {
+		margin-inline-end: 6px;
+	}
+
+	&__num {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 188px;
+		height: 42px;
+		//background: radial-gradient(234.52% 604.25% at 2.67% 70.24%, rgba(84, 90, 174, 0.3) 26.19%, rgba(84, 90, 174, 0) 97.62%);
+		background: radial-gradient(234.52% 604.25% at 2.67% 10%, rgba(84, 90, 174, 0.3) 18%, rgba(84, 90, 174, 0) 47%);
+		border-radius: 5px;
+
+		&:before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 0;
+			height: 0;
+			border-top: 9px solid #A1A8BC;
+			border-right: 9px solid transparent;
+		}
+	}
+}
+
+@media (max-width: 980px) { //------------------------------------------------------------------------------------ 980
+	.header {
+		margin-bottom: 30px;
+	}
+
+	.money {
+		&__item {
+			margin: 10px 15px;
+		}
+		&__num {
+			width: 120px;
+		}
+	}
+}
+
+
+@media (max-width: 768px) { //------------------------------------------------------------------------------------ 768
+	.header {
+		flex-wrap: wrap;
+		padding-top: 15px;
+    	padding-bottom: 15px;
+
+		&__linkBlock {
+			order: -1;
+		}
+
+		&__money {
+			flex-grow: 1;
+			justify-content: center;
+			margin-top: 20px;
+		}
+	}
+}

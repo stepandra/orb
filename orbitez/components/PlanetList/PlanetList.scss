@@ -1,0 +1,84 @@
+.planetsList {
+	width: 100%;
+	max-width: 350px;
+	//min-height: 100px;
+	margin: auto;
+
+	&__title {
+		margin-bottom: 15px;
+		margin-inline-start: 40px;
+	}
+
+	&__list {
+		position: relative;
+		max-height: 480px;
+		//min-height: 80%;
+		height: 100%;
+		overflow: auto;
+		padding: 40px 0 48px;
+		background: linear-gradient(120.88deg, rgba(39, 37, 73, 0.46) 17.16%, rgba(39, 37, 73, 0.2) 112.09%);
+		border-top: 3px solid #A1A8BC;
+		counter-reset: myCounter;
+
+		&::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			display: block;
+			padding: 3px;
+			border: solid #A1A8BC;
+			border-width: 0 0 3px 3px;
+		}
+	}
+
+	&__item {
+		display: flex;
+		width: 100%;
+		margin: 8px 0;
+		padding: 4px 40px;
+		color: #BFC5D9;
+		font-size: 20px;
+		line-height: 133%;
+		list-style: none;
+ 
+		&:hover {
+			color: #FFFFFF;
+			cursor: pointer;
+		}
+
+		&:before {
+			counter-increment: myCounter;
+			content:counter(myCounter) ". ";
+			margin-inline-end: 8px;
+		}
+
+		&--active {
+			position: relative;
+			background-color: rgba(146, 118, 39, 0.2);
+			color: #FFE191;
+
+			&:after {
+				content: url('/img/arrow-right.svg');
+				position: absolute;
+				top: 50%;
+				right: 15px;
+				transform: translate(0, -50%);
+				display: block;
+				width: 11px;
+				min-height: 14px;
+			}
+		}
+	}
+
+	&__text {
+		padding: 50px 40px;
+		text-align: center;
+		font-size: 20px;
+	}
+
+	&__link {
+		color: #FFE191;
+		font-size: 20px;
+	}
+}

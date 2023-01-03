@@ -1,0 +1,18 @@
+@mixin button($font-size: 1.4rem, $min-width: 180px, $min-height: 50px) {
+    border-radius: $btn_border_radius;
+    padding: 5px 40px;
+    max-width: 280px;
+    min-width: $min-width;
+    min-height: $min-height;
+    font-size: $font-size;
+    line-height: 1.2;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $transition-time ease-out;
+}
