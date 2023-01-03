@@ -1,10 +1,16 @@
 # orbitez
 
 P2E canvas game with NFT pass/skin and DeFi mechanics 
+1) Main page - https://staging.orbitez.io/
+2) Dashboard - https://staging.orbitez.io/dashboard
 
-https://staging.orbitez.io/
+## Tech stack
 
-https://staging.orbitez.io/dashboard
+- Backend: Next.js
+- Frontend: React + Canvas
+- Smart-contracts: Archetype
+- Testing: jest, completium-cli
+- Deploy: Docker, letsencrypt
 
 Smart-contract addrress: 
 https://better-call.dev/ghostnet/KT1Puh2L7yZjcCW3vhJEwoHL9hP4879VrGbD/operations
