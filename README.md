@@ -67,7 +67,7 @@ Presentation: https://docs.google.com/presentation/d/1pYjczLbxw6lLJv-t_jSi37i-G3
 ### 1) Clone the repository
 
 ```
-git clone https://github.com/stepandra/orbitez-secret.git && cd orbitez-secret
+git clone https://github.com/stepandra/orb && cd orb
 ```
 
 ### 2) Requirements:
