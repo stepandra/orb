@@ -130,6 +130,8 @@ Run test
 ```
 npm test
 ```
+<img width="649" alt="Снимок экрана 2023-01-03 в 23 32 55" src="https://user-images.githubusercontent.com/4786779/210452341-35f8e86b-19f6-4cea-8680-d6a400390998.png">
+
 
 ## Contract entrypoints
 - `claim_fees` - claim all contract balance [admin]
