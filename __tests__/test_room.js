@@ -14,6 +14,8 @@ const arnold = getAccount('bootstrap4');
 const owner = getAccount('bootstrap1');
 const jack  = getAccount('bootstrap2');
 const bob   = getAccount('bootstrap3');
+const john = getAccount('bootstrap5');
+const nick = getAccount('carl');
 
 const PACKED_OUTCOME = '05020000008a07070100000024747a314b715470455a37596f62375162504534487934576f38664847384c684b785a5378008d0507070100000024747a31566932437371375668786f335a4d796242526e644c75567133573647384e68446b00a50e07070100000024747a31676a614638315a525276647a6a6f627966564e7341655343365053636a6651774e009508';
 const SIGNED_OUTCOME = 'edsigtpW3VsUtJypAp2TTSZLAsoczspB4K1pm6tRanoLCHdcfvYmhu58kEbKwWLusJnreQB1DiHQbaaD6F8HbKKp65JaYHSvDXZ';
@@ -64,7 +66,7 @@ test('Contract deployed', async () => {
       arg: { 
         game_duration_v: 3,
         serverd: "NYC",
-        size_v: 3,
+        size_v: 5,
         bet_size: 1000000,
         serverurl: "https",
         room_idx: "NYC",
@@ -94,7 +96,20 @@ test('Room filled', async () => {
     room_idv: "NYC",
     serverid: "NYC"
   },
+  as: john.pkh
+  })
+
+  var op = await room.enter_room({amount: "1tz", arg: {
+    room_idv: "NYC",
+    serverid: "NYC"
+  },
   as: arnold.pkh
+  })
+  var op = await room.enter_room({amount: "1tz", arg: {
+    room_idv: "NYC",
+    serverid: "NYC"
+  },
+  as: bob.pkh
   })
 })
 
@@ -141,7 +156,7 @@ test ('Player not inside room', async () => {
         serverid: "NYC",
         packed_outcome: PACKED_OUTCOME,
         signed_outcome: SIGNED_OUTCOME
-      }, as: bob.pkh
+      }, as: nick.pkh
     })
   }, errors.NOT_PARTICIPATED)
 })
@@ -205,10 +220,9 @@ test('Game ended', async () => {
 })
 
   test('Correct win amount', async() => {
-    await checkBalanceDelta('tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx',  0.709702, async () => {
-      await mockupBake();
+    await checkBalanceDelta('tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx',  0.959704, async () => {
+      await checkBalanceDelta(bob.pkh, 0, async () => {
+        await mockupBake();
+      });
     });
   })
-
-// })
-// test();
