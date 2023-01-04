@@ -8,7 +8,8 @@ import inMemoryCache from "memory-cache";
 export default async function handler(req, res) {
   const { server } = req.body
   var oracle = new InMemorySigner(process.env.SIGNING_PRIVATE_KEY);
-  const Tezos = new TezosToolkit("https://api.ghostnet.tzkt.io/");
+  const RPC_URL = "https://rpc.tzkt.io/ghostnet";
+  const Tezos = new TezosToolkit(RPC_URL);
   let contractServerList = []
 
     const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
