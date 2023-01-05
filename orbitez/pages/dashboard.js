@@ -11,7 +11,7 @@ import { Header } from "@components/Header/Header";
 import { Planet } from "@components/Planet/Planet";
 import { PlanetList } from "@components/PlanetList/PlanetList";
 import { PlanetDataList } from "@components/PlanetDataList/PlanetDataList";
-import { DeploymentModal } from "@components/DeploymentModal";
+import { DeploymentModal } from "@components/DeploymentModal/DeploymentModal";
 import { PayMethod } from "@components/PayMethod/PayMethod";
 
 export default function Dashboard() {
