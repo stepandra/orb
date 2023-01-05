@@ -90,6 +90,10 @@ export class DigitalOceanServer extends OrbitezServer {
     } else if (Date.now() - this.startTimestamp >= TIMEOUT_MS) {
       console.error('hit timeout while waiting for installation');
       this.setInstallState('FAILED');
+    } else if (tagMap.get(SSL_READY_TAG) && tagMap.get(!TEZ_NODE_TAG)) {
+      this.setInstallState('COMPLETED');
+    } else if (tagMap.get(TEZ_NODE_READY) && tagMap.get(TEZ_NODE_TAG)) {
+      this.setInstallState('COMPLETED');
     } else if (tagMap.get(INSTALL_STARTED_TAG)) {
       this.setInstallState('DROPLET_RUNNING');
     } else if (this.dropletInfo?.status === 'active') {
