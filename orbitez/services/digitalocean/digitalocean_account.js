@@ -1,3 +1,4 @@
+import dedent from "dedent";
 import { RestApiSession } from "./cloud/digitalocean_api";
 import * as crypto from "./infra/crypto";
 import * as digitalocean from "./model/digitalocean";
@@ -64,6 +65,7 @@ export class DigitalOceanAccount {
         shouldDeployNode,
         contractAddress,
         roomName,
+        assignedSubdomain,
     }) {
         console.time("activeServer");
         console.time("servingServer");
@@ -72,7 +74,8 @@ export class DigitalOceanAccount {
             this.digitalOcean.accessToken,
             shouldDeployNode,
             contractAddress,
-            roomName
+            roomName,
+            assignedSubdomain
         );
 
         const dropletSpec = {
@@ -181,23 +184,25 @@ function cloud::add_encoded_kv_tag() {
 echo "true" | cloud::add_encoded_kv_tag "install-started"
 `;
 
-const TEZOS_NODE_DEPLOY = `
-  sudo add-apt-repository -yu ppa:serokell/tezos
-  sudo apt-get install -y tezos-baking
-  echo "true" | cloud::add_encoded_kv_tag "node_install_started"
-  yes $'1\n2\n1\n1\n1' | tezos-setup-wizard
-  ngrok http 8732 --log=stdout > ngrok_teznode.log &
-  sleep 10
-  export TEZ_RPC_URL=$(grep 'addr=http://localhost:8732 url=' ngrok_teznode.log | sed 's/^.*url=https://' | tr -d '"//*.ngrok.io' )
-  echo \${TEZ_RPC_URL} | cloud::add_encoded_kv_tag "TEZ_RPC_URL"
-  echo "true" | cloud::add_encoded_kv_tag "node_live"
+const TEZOS_NODE_DEPLOY = dedent`
+    sudo add-apt-repository -yu ppa:serokell/tezos
+    sudo apt-get install -y tezos-baking
+    echo "true" | cloud::add_encoded_kv_tag "tez-node-install-started"
+    yes $'1\n2\n1\n1\n1' | tezos-setup
+
+    if [ $? -eq 0 ]; then
+        echo true
+    else
+        echo false
+    fi | cloud::add_encoded_kv_tag "tez-node-ready"
 `;
 
 function getInstallScript(
     accessToken,
     shouldDeployNode,
     contractAddress,
-    roomName
+    roomName,
+    assignedSubdomain,
 ) {
     const sanitizedAccessToken = sanitizeDigitalOceanToken(accessToken);
     return `#!/bin/bash
@@ -205,16 +210,105 @@ function getInstallScript(
     export DO_ACCESS_TOKEN="${sanitizedAccessToken}"
     readonly DO_METADATA_URL="http://169.254.169.254/metadata/v1"
     ${TAG_FUNCS_SH}
-    snap install ngrok
-    ngrok config add-authtoken 1z8JvuGlnqE3EDHXods2B1qNzP9_6H5x8AiP5wfyRQ158DhR5
-    docker run --env CONTRACT_ADDRESS=${contractAddress} --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 andriiolefirenko/orbitez:latest
-    ngrok http 8080 --subdomain=orbitez-server --log=stdout > ngrok.log &
-    sleep 15
-    ngrok http 88 --subdomain=orbitez-stats --log=stdout > ngrok.log &
-    sleep 15
-    export NGROK_URL=$(curl -s localhost:4040/api/tunnels | jq .tunnels[0].public_url)
-    echo \${NGROK_URL} | tr -d '"https://*.ngrok.io' | cloud::add_encoded_kv_tag "NGROK_URL"
-    echo "true" | cloud::add_encoded_kv_tag "ngrok_ready"
+
+    echo ${assignedSubdomain} | cloud::add_encoded_kv_tag "assigned-subdomain"
+    echo ${roomName} | cloud::add_encoded_kv_tag "room-name"
+    ${shouldDeployNode ? `echo "true" | cloud::add_encoded_kv_tag "tez-node"` : ""}
+
+    apt-get update && apt-get -y install nginx
+    snap install --classic certbot
+
+    docker run --name orbitez-server --env CONTRACT_ADDRESS=${contractAddress} --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 andriiolefirenko/orbitez:latest
+
+    if [ $? -eq 0 ]; then
+        echo true
+    else
+        echo false
+    fi | cloud::add_encoded_kv_tag "docker-container-started"
+
+    ${getSetupReverseProxyAndSSLScript(assignedSubdomain)}
+
     ${shouldDeployNode ? TEZOS_NODE_DEPLOY : ""}
     `;
 }
+
+const getSetupServerBlocksAndProxyScript = (serverData) => {
+    const { domainName, port } = serverData;
+
+    return dedent`
+        mkdir -p /var/www/${domainName}/html
+        chown -R $USER:$USER /var/www/${domainName}/html
+        chmod -R 755 /var/www/${domainName}
+        cat > /etc/nginx/sites-available/${domainName} <<EOF
+        server {
+            server_name ${domainName};
+
+            access_log /var/log/nginx/${domainName}.access.log;
+
+            location / {
+                proxy_set_header Host \$host;
+                proxy_set_header X-Real-IP \$remote_addr;
+                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto \$scheme;
+
+                proxy_pass http://localhost:${port};
+                proxy_read_timeout 90;
+
+                proxy_redirect http://localhost:${port} https://${domainName};
+            }
+        }
+
+        EOF
+        sudo ln -s /etc/nginx/sites-available/${domainName} /etc/nginx/sites-enabled/`
+    };
+
+// Connect via ssh to DO instance and run this script to install ...
+// .. Let's Encrypt Certificate and setup NGINX reverse proxy
+const getSetupReverseProxyAndSSLScript = (assignedSubdomain, shouldDeployNode) => {
+    const baseDomainName = `${assignedSubdomain}.orbitez.io`;
+
+    const gameServer = {
+        domainName: `server.${baseDomainName}`,
+        port: '8080'
+    };
+    const statsServer = {
+        domainName: `stats.${baseDomainName}`,
+        port: '88'
+    };
+    const tezNode = {
+        domainName: `rpc.${baseDomainName}`,
+        port: '8732'
+    };
+
+    return dedent`
+        sudo ln -s /snap/bin/certbot /usr/bin/certbot
+        sudo ufw allow 'Nginx Full'
+        ${getSetupServerBlocksAndProxyScript(gameServer)}
+        ${getSetupServerBlocksAndProxyScript(statsServer)}
+        ${shouldDeployNode ? getSetupServerBlocksAndProxyScript(tezNode) : ""}
+        sed -i 's/# server_names_hash_bucket_size 64/server_names_hash_bucket_size 64/' /etc/nginx/nginx.conf
+        sudo systemctl restart nginx
+
+        if [ $? -eq 0 ]; then
+            echo true
+        else
+            echo false
+        fi | cloud::add_encoded_kv_tag "nginx-ready"
+
+        until ip addr | grep -q $(host -t A ${gameServer.domainName} | awk '{print $NF}') 2>/dev/null
+        do
+            echo 'Waiting for DNS records'
+            sleep 30
+        done
+
+        echo "true" | cloud::add_encoded_kv_tag "dns-records-available"
+
+        certbot -n --nginx --agree-tos -d ${gameServer.domainName},${statsServer.domainName},${tezNode.domainName} --register-unsafely-without-email --redirect
+
+        if [ $? -eq 0 ]; then
+            echo true
+        else
+            echo false
+        fi | cloud::add_encoded_kv_tag "ssl-ready"
+    `;
+};

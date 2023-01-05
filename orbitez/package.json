@@ -22,6 +22,7 @@
     "@tezos-contrib/nft-hooks": "^0.0.1",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.2",
+    "dedent": "^0.7.0",
     "fs": "^0.0.1-security",
     "memory-cache": "^0.2.0",
     "next": "12.0.7",
