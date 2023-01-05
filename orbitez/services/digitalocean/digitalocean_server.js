@@ -3,6 +3,7 @@ import {hexToString} from './infra/hex_encoding';
 import {sleep} from './infra/sleep';
 import {ValueStream} from './infra/value_stream';
 import {Region} from './model/digitalocean';
+import {RestApiSession} from "./cloud/digitalocean_api";
 
 import {OrbitezServer} from './orbitez_server';
  
@@ -10,11 +11,23 @@ import {OrbitezServer} from './orbitez_server';
 const KEY_VALUE_TAG = 'kv';
 // The tag that appears at the beginning of installation.
 const INSTALL_STARTED_TAG = 'install-started';
-// The tag key for the manager API certificate fingerprint.
-const NGROK_READY = 'ngrok_ready';
+// The tag that indicates the start of the docker container.
+const DOCKER_CONTAINER_STARTED_TAG = 'docker-container-started';
+// The tag that indicates that nginx installation and configuration ...
+// .. as a reverse proxy is finished.
+const NGINX_READY_TAG = 'nginx-ready';
+// The tag that indicates that DNS records came into effect
+const DNS_RECORDS_AVAILABLE_TAG = 'dns-records-available';
+// The tag that indicates successful SSL certificates creation
+const SSL_READY_TAG = 'ssl-ready';
+// The tag that indicates that droplet features tezos node
+const TEZ_NODE_TAG = 'tez-node';
+// The tag that indicates successful Tezos node installation
+const TEZ_NODE_READY = 'tez-node-ready'
 // The tag which appears if there is an error during installation.
 const INSTALL_ERROR_TAG = 'install-error';
 
+const ORBITEZ_DNS_TOKEN = process.env.ORBITEZ_DNS_TOKEN;
 
 function getCompletionFraction(state) {
   switch (state) {
@@ -57,6 +70,8 @@ export class DigitalOceanServer extends OrbitezServer {
     this.dropletInfo = dropletInfo
     // Consider passing a RestEndpoint object to the parent constructor,
     // to better encapsulate the management api address logic.
+
+    this.isDnsRecordCreated = null;
     
     console.info('DigitalOceanServer created');
     // Go to the correct initial state based on the initial dropletInfo.
@@ -82,11 +97,73 @@ export class DigitalOceanServer extends OrbitezServer {
     }
   }
 
+  getAssignedSubdomain() {
+    const tagMap = this.getTagMap();
+    if (!tagMap.get("assigned-subdomain")) return undefined;
+
+    const assignedSubdomain = tagMap.get("assigned-subdomain");
+    return assignedSubdomain;
+  };
+
+  async checkDnsRecord() {
+    const ipv4 = this.ipv4Address();
+    const assignedSubdomain = this.getAssignedSubdomain();
+
+    const dnsDoAccountRestApiSession = new RestApiSession(ORBITEZ_DNS_TOKEN);
+
+    try {
+      // Checking if DNS record for assigned subdomain already exists
+      const domainRecords = await dnsDoAccountRestApiSession.getSubdomainDnsRecords('orbitez.io', assignedSubdomain);
+
+      for (const record of domainRecords) {
+        if (
+            record.type === "A" &&
+            record.name === `*.${assignedSubdomain}` &&
+            record.data === ipv4
+        ) {
+            this.isDnsRecordCreated = true;
+            return;
+        }
+    }
+
+    this.isDnsRecordCreated = false;
+
+    } catch(error) {
+      if (error.status === 404) {
+        this.isDnsRecordCreated = false;
+        return;
+      };
+
+      console.log('Failed to check subdomain DNS record', error);
+    };
+  }
+
+  async createDnsRecord() {
+    const ipv4 = this.ipv4Address();
+    const assignedSubdomain = this.getAssignedSubdomain();
+
+    const dnsDoAccountRestApiSession = new RestApiSession(ORBITEZ_DNS_TOKEN);
+
+    try {
+      await dnsDoAccountRestApiSession.addSubdomainDnsRecord('orbitez.io', assignedSubdomain, ipv4);
+      this.isDnsRecordCreated = true;
+    } catch(error) {
+      console.log('Failed to add subdomain DNS record', error);
+    }
+  }
  
   async pollInstallState() {
     while (!this.installState.isClosed()) {
       try {
         await this.refreshDropletInfo();
+        const ipv4 = this.ipv4Address();
+        const assignedSubdomain = this.getAssignedSubdomain();
+        if (ipv4 && assignedSubdomain && this.isDnsRecordCreated === null) {
+          await this.checkDnsRecord();
+        };
+        if (ipv4 && assignedSubdomain && this.isDnsRecordCreated === false) {
+          await this.createDnsRecord();
+        };
       } catch (error) {
         console.log('Failed to get droplet info', error);
         this.setInstallState('FAILED');
