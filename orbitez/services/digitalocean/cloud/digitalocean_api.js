@@ -127,6 +127,30 @@ export class RestApiSession {
     });
   }
 
+  getSubdomainDnsRecords(domainName, subdomainName) {
+    console.info(`Requesting DNS A Records for: ${domainName}`);
+    return this.request('GET', `domains/${domainName}/records?name=*.${subdomainName}.${domainName}&type=A`)
+    .then((response) => {
+      return response.domain_records;
+    });
+  }
+
+  addSubdomainDnsRecord(domainName, subdomainName, targetIp) {
+    console.info(`Requesting addition of subdomain: ${subdomainName} DNS A Record`);
+    return this.request('POST', `domains/${domainName}/records`, {
+      type: 'A',
+      name: `*.${subdomainName}`,
+      data: targetIp
+    }).then((response) => {
+      return response.domain_record;
+    });
+  }
+
+  removeDnsRecord(domainName, domainRecordId) {
+    console.info(`Requesting removal of DNS record: ${domainRecordId} on the ${domainName}`);
+    return this.request('DELETE', `domains/${domainName}/records/${domainRecordId}`);
+  }
+
   // Makes an XHR request to DigitalOcean's API, returns a promise which fulfills
   // with the parsed object if successful.
   request(method, actionPath, data) {
