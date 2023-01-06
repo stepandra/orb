@@ -226,7 +226,7 @@ function getInstallScript(
         echo false
     fi | cloud::add_encoded_kv_tag "docker-container-started"
 
-    ${getSetupReverseProxyAndSSLScript(assignedSubdomain)}
+    ${getSetupReverseProxyAndSSLScript(assignedSubdomain, shouldDeployNode)}
 
     ${shouldDeployNode ? TEZOS_NODE_DEPLOY : ""}
     `;
