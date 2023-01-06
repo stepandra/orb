@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import ProgressBar from "@ramonak/react-progress-bar";
 import useDigitalOceanDeployment from "@hooks/useDigitalOceanDeployment";
 import { LoadingButton } from "./LoadingButton";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import ReactTooltip from 'react-tooltip';
 
 const regionsList = [
     { name: "New York City", value: "NYC3" },
@@ -34,6 +36,8 @@ export function DigitalOceanDeployment() {
         deployDOServer,
         activateServer,
     } = useDigitalOceanDeployment(regionsList);
+
+    const tooltipTargetRef = useRef(null);
 
     const areServerSettingValid =
         serverName !== "" && roomSize >= 3 && gameLength >= 5;
@@ -151,13 +155,35 @@ export function DigitalOceanDeployment() {
                 {progress > 0 && progress < 100 && (
                     <LoadingButton label="Deploy Server" />
                 )}
-                {progress === 100 && tezNodeReady && serverName (
+                {progress === 100 && tezRpcUrl && (
                     <>
                         <p className="serverDeploymentSettings__text">
                             Your own Tezos Node is live. Add the following RPC
                             to your wallet:
                             <br />
-                            <br /> https://{tezRpcUrl}
+                            <br />
+                            <CopyToClipboard
+                                text={`https://${tezRpcUrl}`}
+                                onCopy={() => {
+                                    ReactTooltip.show(tooltipTargetRef.current)
+                                }}
+                            >
+                                <code
+                                    ref={tooltipTargetRef}
+                                    data-tip="Copied to clipboard!"
+                                >
+                                    https://{tezRpcUrl}
+                                </code>
+                            </CopyToClipboard>
+                            <ReactTooltip
+                                place="top"
+                                type="dark"
+                                effect="solid"
+                                event="none"
+                                afterShow={() =>
+                                    setTimeout(ReactTooltip.hide, 1200)
+                                }
+                            />
                         </p>
                         <br />
                     </>
