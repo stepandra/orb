@@ -91,6 +91,11 @@
 		padding: 0;
 	}
 
+	&__url {
+		font-family: monospace;
+		cursor: pointer;
+	}
+
 	&__input {
 		height: 3.125rem;
 		margin: 0;

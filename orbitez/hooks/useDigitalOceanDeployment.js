@@ -75,7 +75,10 @@ const useDigitalOceanDeployment = (regionsList) => {
 
     // Running on mount and when token gets available
     useEffect(() => {
-        if (!token) return;
+        if (!token) {
+            setLoadingEnded(true)
+            return;
+        };
 
         getDroplets();
     }, [token]);

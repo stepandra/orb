@@ -169,6 +169,7 @@ export function DigitalOceanDeployment() {
                                 }}
                             >
                                 <code
+                                    className="serverDeploymentSettings__url"
                                     ref={tooltipTargetRef}
                                     data-tip="Copied to clipboard!"
                                 >
