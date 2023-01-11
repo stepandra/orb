@@ -4,10 +4,13 @@
 	justify-content: center;
 	align-items: center;
 
-	&--bgCircle { // TODO: need refactoring
-		width: 618px; // Temp
-        height: 618px; // Temp
-        margin-bottom: 30px; // Temp
-        background-image: url('../../public/img/temp-bg-planet.png');
+	&--loading-text {
+		font-size: 1rem;
+	}
+
+	&__canvas-wrapper {
+		&--not-displayed {
+			display: none;
+		}
 	}
 }
