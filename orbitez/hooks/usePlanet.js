@@ -16,6 +16,7 @@ const usePlanet = (mintHash) => {
             });
         };
 
+        setIsPlanetInitialized(false);
         loadPlanet();
     }, [mintHash, arePlanetScriptsReady]);
 

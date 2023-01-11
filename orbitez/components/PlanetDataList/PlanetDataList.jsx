@@ -14,7 +14,6 @@ export function PlanetDataList({ className='', isPlanetReady, mintHash }) {
     useEffect(() => {
         if (!isPlanetReady) return;
 
-
         setPlanetFeatures(window.$fxhashFeatures)
     }, [isPlanetReady, mintHash]);
 
