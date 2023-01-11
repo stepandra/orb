@@ -13,10 +13,18 @@ export function useTezos() {
 
   const [balance, setBalance] = useState(0)
   const [address, setAddress] = useState('')
+  const [isAuthLoaded, setIsAuthLoaded] = useState(false);
 
   useEffect(async () => {
-    connectionExistsCheck()
-    updateBalance()
+    try {
+      await connectionExistsCheck();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsAuthLoaded(true)
+    };
+
+    updateBalance();
   }, [address])
 
   const connectionExistsCheck = async () => {
@@ -69,6 +77,6 @@ export function useTezos() {
     Tezos,
     address,
     balance,
+    isAuthLoaded,
   }
 }
-
