@@ -3,6 +3,7 @@ window.main = () => {
     var canvas = document.getElementById("c");
     var structs = {};
     var slots = {};
+    let randGeneratedValues = [];
 
     function createShader(gl, type, source) {
     var shader = gl.createShader(type);
@@ -293,7 +294,17 @@ window.main = () => {
     }
 
     function rnd() {
-        return window.fxrand();
+        const handler = {
+            apply: function (target, thisArg, argumentsList) {
+                const randValue = target({ ...argumentsList });
+                randGeneratedValues.push(randValue);
+
+                return randValue;
+            }
+        };
+
+        const randFunctionProxy = new Proxy(window.fxrand, handler);
+        return randFunctionProxy();
     }
 
     var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -351,6 +362,9 @@ window.main = () => {
     }
 
     function genFromRandomID(id) {
+        for (let i = 0; i < 6; i++) {
+            rnd();
+        };
         Math.seedrandom();
         genFromID(id);
     }
@@ -360,8 +374,6 @@ window.main = () => {
         console.log(genID);
         var result = doGen("planet")
         doDisplay(result);
-        var name = doExpand(result.struct.vals["desc"], result).split("</h1>")[0].replace("<h1>", "");
-        document.getElementById("download").download = name + " " + genID + ".png";
     }
 
     function doGen(structID) {
@@ -404,13 +416,9 @@ window.main = () => {
         //     "Industry: " + (Math.max(1, Math.min(9, eval(doExpand(result.struct.vals["min"], result))))) + "<br>" +
         //     "Science: " + (Math.max(1, Math.min(9, eval(doExpand(result.struct.vals["sci"], result)))))
         // );
-        window.$fxhashFeatures = {
-            "habitability": getHab(window.fxrand()) + "%",
-            "size": getSize(window.fxrand()),
-            "age": getHab(window.fxrand()) + "M years",
-            "gravity": getGravity(window.fxrand()),
-            "exoplanet": isExoplanet(window.fxrand())
-        }
+        for (let i = 0; i < 7; i++) {
+            rnd();
+        };
         console.log(result);
         vWaterLevel = eval(doExpand(result.struct.vals["watL"], result));
         vTemperature = eval(doExpand(result.struct.vals["temp"], result));
@@ -438,6 +446,14 @@ window.main = () => {
         sc = 20 + Math.ceil(rnd() * 80);
         vNoiseScale3 = [sc, sc];
         vCloudNoise = [4 + Math.ceil(rnd() * 9), 20 + Math.ceil(rnd() * 20)];
+
+        window.$fxhashFeatures = {
+            "habitability": getHab(randGeneratedValues[47]) + "%",
+            "size": getSize(randGeneratedValues[48]),
+            "age": getHab(randGeneratedValues[49]) + "M years",
+            "gravity": getGravity(randGeneratedValues[50]),
+            "exoplanet": isExoplanet(randGeneratedValues[51])
+        };
     }
 
     function doExpand(txt, context) {
@@ -454,17 +470,13 @@ window.main = () => {
         });
     }
 
-    window.initPlanet = (id, size) => {
-        jQuery.ajax({
-            url: "/assets/data.txt?" + (new Date()).getTime(),
-            success: function(txt) { 
-                // console.log(txt);
-                doParse(txt); 
-                genFromRandomID(id);
-                renderPlanet(size);
-                requestAnimationFrame(nextFrame);
-            }
-        });
+    window.initPlanet = async (id, size) => {
+        const response = await fetch('/assets/data.txt');
+        const txt = await response.text();
+        doParse(txt);
+        genFromRandomID(id);
+        renderPlanet(size);
+        requestAnimationFrame(nextFrame);
     }
 
 }
