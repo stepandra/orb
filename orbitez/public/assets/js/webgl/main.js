@@ -293,6 +293,8 @@ window.main = () => {
         gl.drawArrays(primitiveType, offset, count);    
     }
 
+    // Creating a proxy of window.fxrand function for "catching" all ...
+    // .. generated random values from each function call
     function rnd() {
         const handler = {
             apply: function (target, thisArg, argumentsList) {
@@ -362,9 +364,11 @@ window.main = () => {
     }
 
     function genFromRandomID(id) {
+        // Skipping 6 random numbers to match NFT render and data
         for (let i = 0; i < 6; i++) {
             rnd();
         };
+
         Math.seedrandom();
         genFromID(id);
     }
@@ -416,9 +420,12 @@ window.main = () => {
         //     "Industry: " + (Math.max(1, Math.min(9, eval(doExpand(result.struct.vals["min"], result))))) + "<br>" +
         //     "Science: " + (Math.max(1, Math.min(9, eval(doExpand(result.struct.vals["sci"], result)))))
         // );
+
+        // Skipping 7 random numbers to match NFT render and data
         for (let i = 0; i < 7; i++) {
             rnd();
         };
+
         console.log(result);
         vWaterLevel = eval(doExpand(result.struct.vals["watL"], result));
         vTemperature = eval(doExpand(result.struct.vals["temp"], result));
@@ -447,6 +454,8 @@ window.main = () => {
         vNoiseScale3 = [sc, sc];
         vCloudNoise = [4 + Math.ceil(rnd() * 9), 20 + Math.ceil(rnd() * 20)];
 
+        // Generating planet data and reusing previously generated random...
+        // .. values to match NFT data
         window.$fxhashFeatures = {
             "habitability": getHab(randGeneratedValues[47]) + "%",
             "size": getSize(randGeneratedValues[48]),
