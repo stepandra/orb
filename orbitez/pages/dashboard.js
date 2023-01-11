@@ -269,12 +269,15 @@ export default function Dashboard() {
 
                 <div className='dashboard__center'>
                     <img src='/img/bg-planet.png' className='planet_outline' />
-                    <Planet mintHash={mintHash} />
+                    <Planet isPlanetReady={isPlanetInitialized} />
                     <PayMethod />
                 </div>
 
                 <div className='dashboard__right'>
-                    <PlanetDataList mintHash={mintHash} />
+                    <PlanetDataList
+                        isPlanetReady={isPlanetInitialized}
+                        mintHash={mintHash}
+                    />
                 </div>
 
                 <a

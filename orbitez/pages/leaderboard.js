@@ -34,12 +34,16 @@ export default function Leaderboard() {
                     </div>
 
                     <div className="leaderBoard__center">
-                        <Planet mintHash={fxhash}/>
+                        <Planet isPlanetReady={isPlanetInitialized}/>
                         <a className="leaderBoard__btn btn btn--center" href="#">BUY</a>
                     </div>
                     
                     <div className="leaderBoard__right">
-                        <PlanetDataList className='planetData--clear'/>
+                        <PlanetDataList
+                            className='planetData--clear'
+                            isPlanetReady={isPlanetInitialized}
+                            mintHash={fxhash}
+                        />
                     </div>
 
                     <div className="leaderBoard__bg">
