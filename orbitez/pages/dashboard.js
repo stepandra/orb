@@ -1,8 +1,7 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
 import usePlanet from "@hooks/usePlanet";
@@ -16,9 +15,10 @@ import { DeploymentModal } from "@components/DeploymentModal/DeploymentModal";
 import { PayMethod } from "@components/PayMethod/PayMethod";
 import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
 
+const DEFAULT_GATEWAY = 'gateway.ipfs.io';
+
 export default function Dashboard() {
-    const { connectWallet, disconnectWallet, address, Tezos, balance } =
-        useTezos();
+    const { connectWallet, address, Tezos, isAuthLoaded } = useTezos();
     const router = useRouter();
     const [mintHash, setMintHash] = useState("");
     const [planetsAvailable, setPlanetsAvailable] = useState([]);
@@ -110,14 +110,42 @@ export default function Dashboard() {
         }
     }, []);
 
-    setTimeout(async () => {
-        let gateway;
-        if (typeof window !== "undefined")
-            gateway = localStorage.getItem("ipfs-gateway") || "gateway.ipfs.io";
-        else {
-            gateway = "gateway.ipfs.io";
+    const getGateway = useCallback(() => {
+        if (typeof window === "undefined") {
+            return DEFAULT_GATEWAY;
+        };
+
+        const localStorageGateway = localStorage.getItem("ipfs-gateway");
+
+        if (!localStorageGateway) {
+            return DEFAULT_GATEWAY;
+        };
+
+        return localStorageGateway;
+    }, []);
+
+    const getDemoPlanet = useCallback((gateway) => {
+        return {
+            gen_hash: "ooKg2zuJu9XhZBRKQaBrEDvpeYZjDPmKREp3PMSZHLkoSFK3ejN",
+            img_link: `https://${gateway}/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi`,
+            token_id: "DEMO PLANET"
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!isAuthLoaded) return;
+
+        if (!address) {
+            const gateway = getGateway();
+            const demoPlanet = getDemoPlanet(gateway);
+
+            setPlanetsAvailable([demoPlanet]);
+            return;
         }
-        !planetsAvailable.length &&
+
+        const fetchPlanets = async () => {
+            const gateway = getGateway();
+
             fetch("https://api.fxhash.xyz/graphql", {
                 method: "POST",
                 headers: {
@@ -145,16 +173,15 @@ export default function Dashboard() {
                         }
                     });
                     if (!planets.length) {
-                        planets.push({
-                            gen_hash:
-                                "ooKg2zuJu9XhZBRKQaBrEDvpeYZjDPmKREp3PMSZHLkoSFK3ejN",
-                            img_link: `https://${gateway}/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi`,
-                            token_id: "DEMO PLANET",
-                        });
+                        const demoPlanet = getDemoPlanet(gateway);
+                        planets.push(demoPlanet);
                     }
                     setPlanetsAvailable(planets);
                 });
-    }, 2000);
+        };
+
+        fetchPlanets();
+    }, [isAuthLoaded, address]);
 
     useEffect(() => {
         if (typeof selectedServerIndex == "undefined" || !serverList.length)
@@ -170,17 +197,17 @@ export default function Dashboard() {
     }, [selectedServerIndex]);
 
     useEffect(() => {
-        if (planetsAvailable?.[planetSelected]) {
-            const selected = planetsAvailable[planetSelected];
-            if (selected.token_id === "DEMO PLANET") {
-                setIsDemoMode(true);
-            } else {
-                setIsDemoMode(false);
-            }
-            setMintHash(selected.gen_hash);
-            localStorage.setItem("mintHash", selected.gen_hash);
-            localStorage.setItem("skinLink", selected.img_link);
+        if (planetsAvailable.length === 0) return;
+
+        const selected = planetsAvailable[planetSelected];
+        if (selected.token_id === "DEMO PLANET") {
+            setIsDemoMode(true);
+        } else {
+            setIsDemoMode(false);
         }
+        setMintHash(selected.gen_hash);
+        localStorage.setItem("mintHash", selected.gen_hash);
+        localStorage.setItem("skinLink", selected.img_link);
     }, [planetSelected, planetsAvailable]);
 
     const enterRoom = async () => {
@@ -262,18 +289,16 @@ export default function Dashboard() {
                 </a>
 
                 <a
-                    className=' btn btn--center'
-                    onClick={() => {
-                        address == "" ? connectAndReload() : enterRoom();
-                    }}>
+                    className='btn btn--center'
+                    onClick={address == "" ? connectAndReload : enterRoom}
+                >
                     {address == "" ? "Connect wallet" : "PLAY"}
                 </a>
 
                 <a
                     className='btn btn--center btn--wide'
-                    onClick={() => {
-                        openDeploymentModal();
-                    }}>
+                    onClick={openDeploymentModal}
+                >
                     <span>Deploy Server</span>
                 </a>
                 {/* 

@@ -10,6 +10,8 @@ import usePlanet from '@hooks/usePlanet';
 
 
 export default function Leaderboard() {
+    const [fxhash, setFxHash] = useState('opKnKPLvxekWsTEZqXUEqmsTCN95tHMtiKVnTbN7qX2uersNYE2');
+
     const {
         isPlanetInitialized,
         setArePlanetScriptsReady
@@ -28,7 +30,7 @@ export default function Leaderboard() {
                 <div className="leaderBoard__inner">
 
                     <div className="leaderBoard__left">
-                        <StatList setHash={setHash}/>
+                        <StatList setHash={setFxHash}/>
                     </div>
 
                     <div className="leaderBoard__center">
