@@ -5,6 +5,7 @@ import { Header } from '@components/Header/Header';
 import { Planet } from '@components/Planet/Planet';
 import { PlanetDataList } from '@components/PlanetDataList/PlanetDataList';
 import { StatList } from '@components/StatList/StatList';
+import { PlanetScripts } from '@components/PlanetScripts/PlanetScripts';
 
 
 export default function Leaderboard() {
@@ -14,6 +15,7 @@ export default function Leaderboard() {
             <Head>
                 <title>Leaderboard - Orbitez.io</title>
             </Head>
+            <PlanetScripts onScriptsReady={() => setArePlanetScriptsReady(true)} />
 
             <Header/>
             

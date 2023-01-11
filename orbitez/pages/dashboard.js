@@ -13,6 +13,7 @@ import { PlanetList } from "@components/PlanetList/PlanetList";
 import { PlanetDataList } from "@components/PlanetDataList/PlanetDataList";
 import { DeploymentModal } from "@components/DeploymentModal/DeploymentModal";
 import { PayMethod } from "@components/PayMethod/PayMethod";
+import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
 
 export default function Dashboard() {
     const { connectWallet, disconnectWallet, address, Tezos, balance } =
@@ -220,6 +221,7 @@ export default function Dashboard() {
             <Head>
                 <title>Dashboard - Orbitez.io</title>
             </Head>
+            <PlanetScripts onScriptsReady={() => setArePlanetScriptsReady(true)} />
 
             <Header />
 
