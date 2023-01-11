@@ -6,10 +6,15 @@ import { Planet } from '@components/Planet/Planet';
 import { PlanetDataList } from '@components/PlanetDataList/PlanetDataList';
 import { StatList } from '@components/StatList/StatList';
 import { PlanetScripts } from '@components/PlanetScripts/PlanetScripts';
+import usePlanet from '@hooks/usePlanet';
 
 
 export default function Leaderboard() {
-    const [fxhash, setHash] = useState('opKnKPLvxekWsTEZqXUEqmsTCN95tHMtiKVnTbN7qX2uersNYE2')
+    const {
+        isPlanetInitialized,
+        setArePlanetScriptsReady
+    } = usePlanet(fxhash);
+
     return (
         <>
             <Head>

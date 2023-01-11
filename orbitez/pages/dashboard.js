@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
+import usePlanet from "@hooks/usePlanet";
 import { CONTRACT_ADDRESS, NFT_CONTRACT_ADDRESS } from "../constants";
 
 import { Header } from "@components/Header/Header";
@@ -26,6 +27,11 @@ export default function Dashboard() {
     const [deploymentModalOpen, setDeploymentModalOpen] = useState(false);
     const [selectedServerIndex, setSelectedServerIndex] = useState(undefined);
     const [serverList, setServerList] = useState([]);
+
+    const {
+        isPlanetInitialized,
+        setArePlanetScriptsReady
+    } = usePlanet(mintHash);
 
     const connectAndReload = () => {
         connectWallet().then(() => {
