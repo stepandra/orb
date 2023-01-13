@@ -5,9 +5,13 @@ import sum from "hash-sum";
 export default async function handler(req, res) {
     const { token, deployTezos, region, contractAddress, roomName } = req.body;
 
+    // Matching only "a-z A-Z 0-9" and "-" character if it is surrounded...
+    // .. by "a-z A-Z 0-9"
+    const sanitizedRoomName = roomName.match(/[\w\d]-[\w\d]|[\w\d]/g).join('');
+
     // Generating subdomain name for server's url
     const hash = sum(Date.now().toString() + roomName);
-    const assignedSubdomain = `${roomName}-${hash}`;
+    const assignedSubdomain = `${roomName}-${hash}`.toLowerCase();
 
     const doAccount = new DigitalOceanAccount("do_account", token, true);
     await doAccount.createServer({
@@ -15,7 +19,7 @@ export default async function handler(req, res) {
         name: "ORBITEZ_TEZ_NODE",
         shouldDeployNode: deployTezos,
         contractAddress,
-        roomName,
+        sanitizedRoomName,
         assignedSubdomain,
     });
 
