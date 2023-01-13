@@ -49,6 +49,17 @@
     "react/react-in-jsx-scope": "off",
    // NextJs specific fix: allow jsx syntax in js files
    // "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }], //should add ".ts" if typescript project
-    "react/display-name": 1
+    "react/display-name": 1,
+    "quotes": ["error", "double"],
+    "indent": ["error", 4],
+    "no-console": "off",
+    "react/prop-types": 0,
+    "react/jsx-indent" : ["error", 4],
+    "react/jsx-indent-props": ["error", 4],
+    "react/self-closing-comp": ["error", {
+      "component": true,
+      "html": false
+    }],
+    "react/jsx-one-expression-per-line": 0
   }
 }
