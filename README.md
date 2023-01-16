@@ -13,7 +13,7 @@ P2E canvas game with NFT pass/skin and DeFi mechanics
 - Deploy: Docker, letsencrypt
 
 Smart-contract addrress: 
-https://better-call.dev/ghostnet/KT1Puh2L7yZjcCW3vhJEwoHL9hP4879VrGbD/operations
+https://better-call.dev/ghostnet/KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH/operations
 
 ## Game Universe
 
