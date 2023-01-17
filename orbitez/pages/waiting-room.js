@@ -3,8 +3,10 @@ import Head from "next/head";
 import { CONTRACT_ADDRESS } from "../constants";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
-import { PlanetGenerator } from "@components/PlanetGenerator/PlanetGenerator";
+import { Planet } from "@components/Planet/Planet";
 import { Header } from "@components/Header/Header";
+import usePlanet from "@hooks/usePlanet";
+import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
 
 const signalR = require("@microsoft/signalr");
 
@@ -14,6 +16,11 @@ export default function WaitingRoom() {
     const [roomSize, setRoomSize] = useState(-1);
     const [mintHash, setMintHash] = useState("");
     const router = useRouter();
+
+    const {
+        isPlanetInitialized,
+        setArePlanetScriptsReady
+    } = usePlanet(mintHash);
 
     const refund = async () => {
         const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
@@ -62,6 +69,7 @@ export default function WaitingRoom() {
             <Head>
                 <title>Waiting room - Orbitez.io</title>
             </Head>
+            <PlanetScripts onScriptsReady={() => setArePlanetScriptsReady(true)} />
 
             <Header />
 
@@ -104,7 +112,7 @@ export default function WaitingRoom() {
                             width: "23%",
                             margin: "0 auto",
                         }}>
-                        <PlanetGenerator mint_hash={mintHash} />
+                        <Planet isPlanetReady={isPlanetInitialized} />
 
                         <a className='btn btn--center' onClick={() => refund()}>
                             Leave room
