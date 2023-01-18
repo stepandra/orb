@@ -197,9 +197,11 @@ export default function Dashboard() {
     }, [Tezos, contractServers, selectedServerIndex]);
 
     const openDeploymentModal = useCallback(async () => {
+        if (!isAuthLoaded) return;
+
         if (!address) await connectWallet();
         setDeploymentModalOpen(true);
-    }, [address]);
+    }, [isAuthLoaded, address]);
 
     // const demoHud = async () => {
     //     router.push("/hud?endless=true");
