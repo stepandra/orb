@@ -15,14 +15,27 @@ export function useTezos() {
   const [address, setAddress] = useState('')
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
 
-  useEffect(async () => {
-    try {
-      await connectionExistsCheck();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsAuthLoaded(true)
-    };
+  useEffect(() => {
+    const loadAuth = async () => {
+      try {
+        await connectionExistsCheck();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsAuthLoaded(true)
+      };
+    }
+
+    loadAuth();
+  }, []);
+
+  useEffect(() => {
+    const updateBalance = async () => {
+      if (address === '') return;
+      
+      const bal = await Tezos.rpc.getBalance(address)
+      setBalance(bal.toNumber() / 1000000)
+    }
 
     updateBalance();
   }, [address])
@@ -37,12 +50,6 @@ export function useTezos() {
       return true
     }
     return false
-  }
-
-  const updateBalance = async () => {
-    if (address == '') return
-    const bal = await Tezos.rpc.getBalance(address)
-    setBalance(bal.toNumber() / 1000000)
   }
 
   const connectWallet = async () => {
