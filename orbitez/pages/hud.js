@@ -190,76 +190,45 @@ export default function Hud() {
                 </div>
             </div> */}
 
-            <header className='header header--hud container'>
-                <div className='ingame-leaderboard-wrapper'>
-                    <InGameLeaderboard />
-                </div>
-
-                <div>
-                    <div className='header__mass mass'>2.560 * 1022 kg</div>
-                </div>
-
-                <div className='linkBlock-wrapper'>
-                    <div className='header__linkBlock'>
-                        <Image
-                            className='header__icon'
-                            src='/img/icon-home.png'
-                            layout='fixed'
-                            width={43}
-                            height={34}
-                            alt=''
-                        />
-                        <Link href='/dashboard'>
-                            <a className='header__link'>Home</a>
-                        </Link>
+            <div className='hud-wrapper'>
+                <header className='header header--hud container'>
+                    <div className='ingame-leaderboard-wrapper'>
+                        <InGameLeaderboard />
                     </div>
-                </div>
-            </header>
 
-            {shouldRenderMain && (
-                <main
-                    className='hud'
-                    dangerouslySetInnerHTML={renderInner(server)}></main>
-            )}
+                    <div>
+                        <div className='header__mass mass'>2.560 * 1022 kg</div>
+                    </div>
 
-            <footer>
-                <div className='gameTimer'>
-                    <div className='gameTimer__num'>
-                        {endBlock - currentBlock}
+                    <div className='linkBlock-wrapper'>
+                        <div className='header__linkBlock'>
+                            <Image
+                                className='header__icon'
+                                src='/img/icon-home.png'
+                                layout='fixed'
+                                width={43}
+                                height={34}
+                                alt=''
+                            />
+                            <Link href='/dashboard'>
+                                <a className='header__link'>Home</a>
+                            </Link>
+                        </div>
                     </div>
-                    <div className='gameTimer__list'>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item gameTimer__item--active'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                        <div className='gameTimer__item'></div>
-                    </div>
-                </div>
-            </footer>
+                </header>
+
+                {shouldRenderMain && (
+                    <main
+                        className='hud'
+                        dangerouslySetInnerHTML={renderInner(server)}></main>
+                )}
+
+                <footer>
+                    <GameProgressTimer
+                        blocksRemaining={endBlock - currentBlock >= 0 ? endBlock - currentBlock : null}
+                    />
+                </footer>
+            </div>
         </>
     );
 }

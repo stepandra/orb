@@ -1,6 +1,11 @@
-.hud {
+.hud-wrapper {
 	position: fixed;
-	z-index: 0;
+    inset: 0;
+}
+
+.hud {
+	position: absolute;
+    inset: 0;
 }
 
 .mass {

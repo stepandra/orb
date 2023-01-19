@@ -17,9 +17,9 @@
 		}
 		align-items: flex-start;
 		pointer-events: none;
-		position: fixed;
+		position: absolute;
 		inset: 0 0 auto;
-		z-index: 9;
+		z-index: 1;
 
 		.ingame-leaderboard-wrapper {
 			display: flex;
