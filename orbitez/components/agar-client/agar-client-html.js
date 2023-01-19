@@ -3,9 +3,12 @@ export const renderInner = (server) => ({
     
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" rel="stylesheet" type="text/css">
 
-    <div class='popUp popUp--connect' id="connecting">
-        <h2 class='popUp__title'>Connecting</h2>
-        <p class='popUp__text'>If you cannot connect to the servers, check if you have some anti virus or firewall blocking the connection.</p>
+    <div class='popUp__wrapper popUp--connect' id="connecting">
+        <div class='popUp__backdrop'></div>
+        <div class='popUp'>
+            <h2 class='popUp__title'>Connecting</h2>
+            <p class='popUp__text'>If you cannot connect to the servers, check if you have some anti virus or firewall blocking the connection.</p>
+        </div>
     </div>
 
     <div class='overlays' id="overlays" style="display: none;">
