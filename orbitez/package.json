@@ -4,8 +4,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
-    "staging": "NODE_ENV=production PORT=5454 node server.js",
+    "start": "next start",
+    "staging": "next start -p 5454",
     "lint": "eslint ./components/** ./pages/** -c .eslintrc.json --ext js,jsx",
     "lint-fix": "eslint ./components/** ./pages/** -c .eslintrc.json --fix --ext js,jsx"
   },
