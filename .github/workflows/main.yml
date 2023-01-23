@@ -21,5 +21,9 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          whoami
-          pwd
+          cd ./orbitez-staging/orbitez-secret/
+          git pull https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/stepandra/orbitez-secret.git
+          cd ./orbitez
+          npm i
+          npm run build &&
+          pm2 reload Orbitez-staging
