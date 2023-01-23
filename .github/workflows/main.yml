@@ -13,11 +13,11 @@ jobs:
     name: Deployment to production
     runs-on: ubuntu-latest
     steps:
-    - name: deploying to staging by executing ssh commands on a remote server
+    - name: Deploying to staging via SSH
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.HOST }}
-        username: github-actions
+        username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
