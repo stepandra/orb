@@ -181,8 +181,7 @@ function cloud::add_encoded_kv_tag() {
   cloud::add_tag \"kv:\${key}:\${value}\"
 }
 
-echo "true" | cloud::add_encoded_kv_tag "install-started"
-`;
+echo "true" | cloud::add_encoded_kv_tag "install-started"`;
 
 const TEZOS_NODE_DEPLOY = dedent`
     sudo add-apt-repository -yu ppa:serokell/tezos
@@ -205,7 +204,8 @@ function getInstallScript(
     assignedSubdomain,
 ) {
     const sanitizedAccessToken = sanitizeDigitalOceanToken(accessToken);
-    return `#!/bin/bash
+    return dedent`
+    #!/bin/bash
     exec &> "./install-shadowbox-output"
     export DO_ACCESS_TOKEN="${sanitizedAccessToken}"
     readonly DO_METADATA_URL="http://169.254.169.254/metadata/v1"
@@ -213,6 +213,7 @@ function getInstallScript(
 
     echo ${assignedSubdomain} | cloud::add_encoded_kv_tag "assigned-subdomain"
     echo ${roomName} | cloud::add_encoded_kv_tag "room-name"
+
     ${shouldDeployNode ? `echo "true" | cloud::add_encoded_kv_tag "tez-node"` : ""}
 
     apt-get update && apt-get -y install nginx
@@ -236,31 +237,34 @@ const getSetupServerBlocksAndProxyScript = (serverData) => {
     const { domainName, port } = serverData;
 
     return dedent`
-        mkdir -p /var/www/${domainName}/html
-        chown -R $USER:$USER /var/www/${domainName}/html
-        chmod -R 755 /var/www/${domainName}
-        cat > /etc/nginx/sites-available/${domainName} <<EOF
-        server {
-            server_name ${domainName};
+    mkdir -p /var/www/${domainName}/html
+    chown -R $USER:$USER /var/www/${domainName}/html
+    chmod -R 755 /var/www/${domainName}
+    cat > /etc/nginx/sites-available/${domainName} <<EOF
+    server {
+        server_name ${domainName};
 
-            access_log /var/log/nginx/${domainName}.access.log;
+        access_log /var/log/nginx/${domainName}.access.log;
 
-            location / {
-                proxy_set_header Host \$host;
-                proxy_set_header X-Real-IP \$remote_addr;
-                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto \$scheme;
+        location / {
+            proxy_http_version 1.1;
+            proxy_set_header Host \$host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection \$connection_upgrade;
 
-                proxy_pass http://localhost:${port};
-                proxy_read_timeout 90;
+            proxy_pass http://localhost:${port};
+            proxy_read_timeout 90;
 
-                proxy_redirect http://localhost:${port} https://${domainName};
-            }
+            proxy_redirect http://localhost:${port} https://${domainName};
         }
+    }
 
-        EOF
-        sudo ln -s /etc/nginx/sites-available/${domainName} /etc/nginx/sites-enabled/`
-    };
+    EOF
+    sudo ln -s /etc/nginx/sites-available/${domainName} /etc/nginx/sites-enabled/`
+};
 
 // Connect via ssh to DO instance and run this script to install ...
 // .. Let's Encrypt Certificate and setup NGINX reverse proxy
@@ -281,34 +285,46 @@ const getSetupReverseProxyAndSSLScript = (assignedSubdomain, shouldDeployNode) =
     };
 
     return dedent`
-        sudo ln -s /snap/bin/certbot /usr/bin/certbot
-        sudo ufw allow 'Nginx Full'
-        ${getSetupServerBlocksAndProxyScript(gameServer)}
-        ${getSetupServerBlocksAndProxyScript(statsServer)}
-        ${shouldDeployNode ? getSetupServerBlocksAndProxyScript(tezNode) : ""}
-        sed -i 's/# server_names_hash_bucket_size 64/server_names_hash_bucket_size 64/' /etc/nginx/nginx.conf
-        sudo systemctl restart nginx
+    sudo ln -s /snap/bin/certbot /usr/bin/certbot
+    sudo ufw allow 'Nginx Full'
+    ${getSetupServerBlocksAndProxyScript(gameServer)}
+    ${getSetupServerBlocksAndProxyScript(statsServer)}
+    ${shouldDeployNode ? getSetupServerBlocksAndProxyScript(tezNode) : ""}
+    sed -i 's/# server_names_hash_bucket_size 64/server_names_hash_bucket_size 128/' /etc/nginx/nginx.conf
+    cat << EOF | sed -i '/^http {$/ r /dev/stdin' /etc/nginx/nginx.conf
 
-        if [ $? -eq 0 ]; then
-            echo true
-        else
-            echo false
-        fi | cloud::add_encoded_kv_tag "nginx-ready"
+    map \$http_upgrade \$connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
 
-        until ip addr | grep -q $(host -t A ${gameServer.domainName} | awk '{print $NF}') 2>/dev/null
-        do
-            echo 'Waiting for DNS records'
-            sleep 30
-        done
+    EOF
+    systemctl restart nginx
 
-        echo "true" | cloud::add_encoded_kv_tag "dns-records-available"
+    if [ $? -eq 0 ]; then
+        echo true
+    else
+        echo false
+    fi | cloud::add_encoded_kv_tag "nginx-ready"
 
-        certbot -n --nginx --agree-tos -d ${gameServer.domainName},${statsServer.domainName},${tezNode.domainName} --register-unsafely-without-email --redirect
+    until ip addr | grep -q $(host -t A ${gameServer.domainName} | awk '{print $NF}') 2>/dev/null
+    do
+        echo 'Waiting for DNS records'
+        sleep 30
+    done
 
-        if [ $? -eq 0 ]; then
-            echo true
-        else
-            echo false
-        fi | cloud::add_encoded_kv_tag "ssl-ready"
-    `;
+    echo "true" | cloud::add_encoded_kv_tag "dns-records-available"
+
+    certbot -n --nginx --agree-tos -d ${gameServer.domainName} --register-unsafely-without-email --redirect &&
+    certbot -n --nginx --agree-tos -d ${statsServer.domainName} --register-unsafely-without-email --redirect ${shouldDeployNode ? '&&' : '' }
+    ${shouldDeployNode ?
+        `certbot -n --nginx --agree-tos -d ${tezNode.domainName} --register-unsafely-without-email --redirect` :
+        ''
+    }
+
+    if [ $? -eq 0 ]; then
+        echo true
+    else
+        echo false
+    fi | cloud::add_encoded_kv_tag "ssl-ready"`;
 };
