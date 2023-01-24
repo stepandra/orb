@@ -1,5 +1,7 @@
 import React, {useState, createContext, useContext, useEffect} from 'react';
-import { BeaconWallet } from "@taquito/beacon-wallet"
+import { BeaconWallet } from "@taquito/beacon-wallet";
+
+import ContextProviders from '@context/ContextProviders';
 
 import '../styles/game-gallery.css'
 import '../styles/game-index.css'
@@ -39,7 +41,9 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <AppWrapper>
-      <Component {...pageProps} />
+      <ContextProviders>
+        <Component {...pageProps} />
+      </ContextProviders>
     </AppWrapper>
   )
 }
