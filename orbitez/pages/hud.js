@@ -35,9 +35,15 @@ export default function Hud() {
         }
     }, []);
 
-    const isGameLive = useMemo(() => {
-        console.log(endBlock, currentBlock);
-        return endBlock && currentBlock && currentBlock > Number(endBlock);
+    const isGameFinished = useMemo(() => {
+        console.log(
+            endBlock,
+            currentBlock,
+            Number(currentBlock) > Number(endBlock)
+        );
+        return (
+            endBlock && currentBlock && Number(currentBlock) > Number(endBlock)
+        );
     }, [endBlock, currentBlock]);
 
     useEffect(() => {
@@ -57,13 +63,12 @@ export default function Hud() {
             });
         };
 
-        if (isGameLive) {
+        if (isGameFinished) {
             redirectWithLeaderboard();
         }
-    }, [currentBlock]);
+    }, [currentBlock, isGameFinished]);
 
     useEffect(() => {
-        let shouldRedirect = true;
         setTimeout(() => {
             window.init();
         }, 900);
@@ -229,8 +234,8 @@ export default function Hud() {
                 <footer>
                     <GameProgressTimer
                         blocksRemaining={
-                            endBlock - currentBlock >= 0
-                                ? endBlock - currentBlock
+                            Number(endBlock) - Number(currentBlock) >= 0
+                                ? Number(endBlock) - Number(currentBlock)
                                 : null
                         }
                     />
