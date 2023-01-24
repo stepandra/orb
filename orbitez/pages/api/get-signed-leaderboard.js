@@ -24,7 +24,9 @@ export default async function handler(req, res) {
     leaderboard = inMemoryCache.get(server);
 
     if (leaderboard == undefined) {
-        const result = await axios.get("http://orbitez-stats.eu.ngrok.io");
+        const result = await axios.get(
+            "https://stats.orbitez-main-fra.orbitez.io/"
+        );
         leaderboard = result.data.leaderboard;
         inMemoryCache.put(server, leaderboard, 300000); //cache for 5 min
     }
