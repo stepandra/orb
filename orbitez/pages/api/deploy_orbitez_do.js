@@ -10,8 +10,8 @@ export default async function handler(req, res) {
     const sanitizedRoomName = roomName.match(/[\w\d]-[\w\d]|[\w\d]/g).join('');
 
     // Generating subdomain name for server's url
-    const hash = sum(Date.now().toString() + roomName);
-    const assignedSubdomain = `${roomName}-${hash}`.toLowerCase();
+    const hash = sum(Date.now().toString() + sanitizedRoomName);
+    const assignedSubdomain = `${sanitizedRoomName}-${hash}`.toLowerCase();
 
     const doAccount = new DigitalOceanAccount("do_account", token, true);
     await doAccount.createServer({
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         name: "ORBITEZ_TEZ_NODE",
         shouldDeployNode: deployTezos,
         contractAddress,
-        sanitizedRoomName,
+        roomName: sanitizedRoomName,
         assignedSubdomain,
     });
 
