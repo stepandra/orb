@@ -30,19 +30,6 @@
 	}
 }
 
-
-
-@media (max-width: 1600px) { //------------------------------------------------------------------------------------ 1600
-	.dashboard {
-		&__center {
-			justify-content: space-around;
-			padding-top: 0;
-			background-image: none;
-		}
-	}
-}
-
-
 @media (max-width: 1280px) { //------------------------------------------------------------------------------------ 1280
 	// .page {
 	// 	&__left {width: 260px;}
@@ -95,6 +82,7 @@
 	height: 100%;
 	margin-top: 1rem;
 	max-height: 500px;
+	justify-content: space-around;
 }
 
 .planet_outline {
