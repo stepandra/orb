@@ -47,7 +47,9 @@ export default function Hud() {
     }, [endBlock, currentBlock]);
 
     useEffect(() => {
+        let shouldRedirect = true;
         const redirectWithLeaderboard = async () => {
+            shouldRedirect = false;
             const server = localStorage.getItem("ORBITEZ_SERVER_NAME");
             const res = await axios.post("/api/get-signed-leaderboard", {
                 server,
@@ -63,7 +65,7 @@ export default function Hud() {
             });
         };
 
-        if (isGameFinished) {
+        if (isGameFinished && shouldRedirect) {
             redirectWithLeaderboard();
         }
     }, [currentBlock, isGameFinished]);
