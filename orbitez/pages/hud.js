@@ -35,10 +35,10 @@ export default function Hud() {
         }
     }, []);
 
-    const isGameLive = useMemo(
-        () => endBlock && currentBlock && currentBlock > Number(endBlock),
-        [endBlock, currentBlock]
-    );
+    const isGameLive = useMemo(() => {
+        console.log(endBlock, currentBlock);
+        return endBlock && currentBlock && currentBlock > Number(endBlock);
+    }, [endBlock, currentBlock]);
 
     useEffect(() => {
         const redirectWithLeaderboard = async () => {
@@ -81,6 +81,9 @@ export default function Hud() {
             )
             .then((res) => {
                 setEndBlock(res.data.room[sanitized]?.finish_block);
+                console.log({
+                    endBlock: res.data.room[sanitized]?.finish_block,
+                });
             });
 
         async function init() {
@@ -225,7 +228,11 @@ export default function Hud() {
 
                 <footer>
                     <GameProgressTimer
-                        blocksRemaining={endBlock - currentBlock >= 0 ? endBlock - currentBlock : null}
+                        blocksRemaining={
+                            endBlock - currentBlock >= 0
+                                ? endBlock - currentBlock
+                                : null
+                        }
                     />
                 </footer>
             </div>
