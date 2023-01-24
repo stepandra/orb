@@ -106,12 +106,7 @@ export default function WaitingRoom() {
                 </div>
 
                 <div className='page__center'>
-                    <div
-                        style={{
-                            position: "relative",
-                            width: "23%",
-                            margin: "0 auto",
-                        }}>
+                    <div className='planet__wrapper--flex-gap'>
                         <Planet isPlanetReady={isPlanetInitialized} />
 
                         <a className='btn btn--center' onClick={() => refund()}>
