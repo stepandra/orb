@@ -99,7 +99,7 @@ cd ./server && yarn && CONTRACT_ADDRESS='KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH' S
 Boot up your local instance of the latest orbitez server and connect it to the room in contract you own.
 
 ```
-docker run --env CONTRACT_ADDRESS=${contractAddress} --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 andriiolefirenko/orbitez:latest
+docker run --env CONTRACT_ADDRESS=${contractAddress} --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 orbitez/orb-game-server-main:latest
 ```
 
 ### 5) Contract tests

@@ -219,7 +219,7 @@ function getInstallScript(
     apt-get update && apt-get -y install nginx
     snap install --classic certbot
 
-    docker run --name orbitez-server --env CONTRACT_ADDRESS=${contractAddress} --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 andriiolefirenko/orbitez:latest
+    docker run --name orbitez-server --env CONTRACT_ADDRESS=${contractAddress} --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 orbitez/orb-game-server-main:latest
 
     if [ $? -eq 0 ]; then
         echo true
