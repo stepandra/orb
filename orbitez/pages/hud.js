@@ -39,16 +39,26 @@ function Hud() {
         }
     }, []);
 
-    const isGameFinished = useMemo(() => {
-        console.log(
-            endBlock,
-            currentBlock,
-            Number(currentBlock) > Number(endBlock)
-        );
-        return (
-            endBlock && currentBlock && Number(currentBlock) > Number(endBlock)
-        );
-    }, [endBlock, currentBlock]);
+    const isGameFinished = useMemo(
+        () => !!(currentBlock && endBlock && currentBlock >= endBlock),
+        [currentBlock, endBlock]
+    );
+
+    const isGameLive = useMemo(
+        () => !!(currentBlock && endBlock && endBlock - currentBlock >= 0),
+        [endBlock, currentBlock]
+    );
+
+    const blocksRemaining = useMemo(
+        () => (isGameLive ? endBlock - currentBlock : null),
+        [isGameLive, currentBlock, endBlock]
+    );
+
+    useEffect(() => {
+        isMounted.current = true;
+
+        return () => isMounted.current = false;
+    }, [])
 
     useEffect(() => {
         let shouldRedirect = true;
@@ -121,11 +131,20 @@ function Hud() {
         };
     }, []);
 
-    const renderMain = () => {
-        setTimeout(() => {
-            setShouldRenderMain(true);
-        }, 800);
-    };
+    useEffect(() => {
+        if (!router.isReady) return;
+
+        const optimisticEndBlock = parseInt(router.query?.endBlock);
+
+        axios
+            .get(
+                `https://api.ghostnet.tzkt.io/v1/contracts/${CONTRACT_ADDRESS}/storage`
+            )
+            .then((res) => {
+                const contractEndBlock = parseInt(res.data.room[`${serverName}`]?.finish_block);
+                setEndBlock(contractEndBlock || optimisticEndBlock);
+            });
+    }, [router.isReady]);
 
     return (
         <>
@@ -236,13 +255,7 @@ function Hud() {
                 )}
 
                 <footer>
-                    <GameProgressTimer
-                        blocksRemaining={
-                            Number(endBlock) - Number(currentBlock) >= 0
-                                ? Number(endBlock) - Number(currentBlock)
-                                : null
-                        }
-                    />
+                    <GameProgressTimer blocksRemaining={blocksRemaining} />
                 </footer>
             </div>
         </>
