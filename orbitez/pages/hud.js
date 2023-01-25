@@ -13,10 +13,11 @@ import InGameLeaderboard from "@components/InGameLeaderboard/InGameLeaderboard";
 import { route } from "next/dist/server/router";
 
 import { useServerContext } from "@context/ServerContext";
+import RouteGuard from "@components/RouteGuard/RouteGuard";
 
 const signalR = require("@microsoft/signalr");
 
-export default function Hud() {
+function Hud() {
     const [endBlock, setEndBlock] = useState(0);
     const [currentBlock, setCurrentBlock] = useState(0);
     const [shouldRenderMain, setShouldRenderMain] = useState(false);
@@ -127,12 +128,6 @@ export default function Hud() {
             <Head>
                 <title>Hud - Orbitez.io</title>
             </Head>
-            <Script
-                src='/assets/js/quadtree.js'
-                strategy='beforeInteractive'></Script>
-            <Script
-                src='/assets/js/main_out.js'
-                strategy='beforeInteractive'></Script>
 
             {/* <div className="overlay" id="deadPlayer">
                 <div className="popUp">
@@ -246,6 +241,40 @@ export default function Hud() {
                     />
                 </footer>
             </div>
+        </>
+    );
+};
+
+export default function ProtectedHud() {
+    const { serverUrl } = useServerContext();
+    const [walletAddress, setWalletAddress] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useVirusAnimation();
+
+    useEffect(() => {
+        const localStorageWalletAddress = localStorage.getItem("tzAddress");
+        setWalletAddress(localStorageWalletAddress);
+        setIsLoading(false);
+    }, []);
+
+    return (
+        <>
+            <Script
+                src='/assets/js/quadtree.js'
+                strategy='beforeInteractive'>
+            </Script>
+            <Script
+                src='/assets/js/main_out.js'
+                strategy='afterInteractive'>
+            </Script>
+            <RouteGuard
+                isAllowed={serverUrl && walletAddress}
+                redirectUrl="/dashboard"
+                isLoading={isLoading}
+            >
+                <Hud />
+            </RouteGuard>
         </>
     );
 }
