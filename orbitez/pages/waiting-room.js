@@ -32,6 +32,8 @@ export default function WaitingRoom() {
     };
 
     useEffect(() => {
+        let pollTimeout;
+
         const poll = async () => {
             const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
             const storage = await contract.storage();
@@ -56,11 +58,13 @@ export default function WaitingRoom() {
                 });
             } else {
                 setWaitRoom(players);
-                setTimeout(() => poll(), 500);
+                pollTimeout = setTimeout(() => poll(), 500);
             }
         };
 
         poll();
+
+        return () => clearTimeout(pollTimeout);
     }, []);
 
     return (

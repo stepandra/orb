@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 
 import Head from "next/head";
 import Link from "next/link";
@@ -22,6 +22,8 @@ function Hud() {
     const [currentBlock, setCurrentBlock] = useState(0);
     const [shouldRenderMain, setShouldRenderMain] = useState(false);
     const router = useRouter();
+
+    const isMounted = useRef(false);
 
     const { serverName, serverUrl, statsUrl } = useServerContext();
 
@@ -75,29 +77,26 @@ function Hud() {
     }, [currentBlock, isGameFinished]);
 
     useEffect(() => {
-        setTimeout(() => {
+        const renderMain = () => {
+            const shouldRenderTimeout = setTimeout(() => {
+                setShouldRenderMain(true);
+            }, 800);
+    
+            return { shouldRenderTimeout };
+        };
+
+        const windowInitTimeout = setTimeout(() => {
             window.init();
         }, 900);
-        renderMain();
+        const { shouldRenderTimeout } = renderMain();
 
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("https://api.ghostnet.tzkt.io/v1/events") //https://api.tzkt.io/ MAINNEt
             .build();
-        const serverName = localStorage.getItem("ORBITEZ_SERVER_NAME");
-        const sanitized = serverName.replaceAll('"', "");
-
-        axios
-            .get(
-                `https://api.ghostnet.tzkt.io/v1/contracts/${CONTRACT_ADDRESS}/storage`
-            )
-            .then((res) => {
-                setEndBlock(res.data.room[sanitized]?.finish_block);
-                console.log({
-                    endBlock: res.data.room[sanitized]?.finish_block,
-                });
-            });
 
         async function init() {
+            if (!isMounted.current) return;
+
             // open connection
             await connection.start();
             // subscribe to head
@@ -114,7 +113,12 @@ function Hud() {
 
         init();
 
-        return;
+        return () => {
+            connection.off("SubscribeToBlocks");
+            connection.stop();
+            clearTimeout(windowInitTimeout);
+            clearTimeout(shouldRenderTimeout);
+        };
     }, []);
 
     const renderMain = () => {
