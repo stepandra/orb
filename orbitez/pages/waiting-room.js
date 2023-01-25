@@ -7,6 +7,7 @@ import { Planet } from "@components/Planet/Planet";
 import { Header } from "@components/Header/Header";
 import usePlanet from "@hooks/usePlanet";
 import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
+import { useServerContext } from '@context/ServerContext';
 
 const signalR = require("@microsoft/signalr");
 
@@ -22,11 +23,11 @@ export default function WaitingRoom() {
         setArePlanetScriptsReady
     } = usePlanet(mintHash);
 
+    const { serverName } = useServerContext();
+
     const refund = async () => {
         const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
-        const serverName = localStorage.getItem("ORBITEZ_SERVER_NAME");
-        const sanitized = serverName.replaceAll('"', "");
-        await contract.methods.refund(sanitized, sanitized).send();
+        await contract.methods.refund(serverName, serverName).send();
         router.push("/dashboard");
     };
 
@@ -34,23 +35,21 @@ export default function WaitingRoom() {
         const poll = async () => {
             const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
             const storage = await contract.storage();
-            const serverName = localStorage.getItem("ORBITEZ_SERVER_NAME");
             setMintHash(localStorage.getItem("mintHash"));
-            const sanitized = serverName.replaceAll('"', "");
-            setRoomSize(storage.room.valueMap.get(serverName).size.c[0]);
+            setRoomSize(storage.room.valueMap.get(`"${serverName}"`).size.c[0]);
             const players = [];
             for (let [key, value] of storage.player.valueMap) {
-                if (value.room_id === sanitized) {
+                if (value.room_id === serverName) {
                     players.push(key.replaceAll('"', ""));
                 }
             }
 
             if (
                 players.length ===
-                storage.room.valueMap.get(serverName).size.c[0]
+                storage.room.valueMap.get(`"${serverName}"`).size.c[0]
             ) {
                 const endBlock =
-                    storage.room.valueMap.get(serverName).finish_block.c[0];
+                    storage.room.valueMap.get(`"${serverName}"`).finish_block.c[0];
                 router.push({
                     pathname: "/hud",
                     query: { endBlock },

@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Head from 'next/head'
-import Link from 'next/link';
-import { useTezos } from '../hooks/useTezos';
-import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useTezos } from '@hooks/useTezos';
+import { useServerContext } from '@context/ServerContext';
 import { CONTRACT_ADDRESS } from '../constants';
+
 
 import { Header } from '@components/Header/Header';
 
 export default function LastGameStats() {
-    const { connectWallet, address, Tezos, balance } = useTezos()
-    const router = useRouter()
+    const { address, Tezos } = useTezos();
+    const router = useRouter();
+
+    const { serverName } = useServerContext();
 
     const payDividends = async () => {
-      const server = localStorage.getItem('ORBITEZ_SERVER_NAME')
       const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
-      const sanitized = server.replaceAll('"', '')
-      await contract.methods.end_game(sanitized, sanitized, router.query.packed, router.query.signed).send({ storageLimit: 1000 })
+      await contract.methods.end_game(serverName, serverName, router.query.packed, router.query.signed).send({ storageLimit: 1000 })
       router.push('/dashboard')
     }
 

@@ -2,12 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import { useTezos } from "@hooks/useTezos";
 import { BigNumber } from "bignumber.js";
 import { CONTRACT_ADDRESS } from "../constants";
+import { useServerContext } from '@context/ServerContext';
 
 const useContractServers = () => {
     const [contractServers, setContractServers] = useState([]);
     const [selectedServerIndex, setSelectedServerIndex] = useState(null);
 
     const { Tezos } = useTezos();
+
+    const {
+        serverUrl: savedServerUrl,
+        setServerName,
+        setServerUrl,
+        setStatsUrl
+    } = useServerContext();
 
     const calculateServerState = useCallback((serverData) => {
         const {
@@ -74,8 +82,6 @@ const useContractServers = () => {
 
             setContractServers(contractServerList);
 
-            const savedServerUrl = localStorage.getItem("ORBITEZ_SERVER_URL");
-
             if (!savedServerUrl) {
                 setSelectedServerIndex(0);
                 return;
@@ -98,16 +104,20 @@ const useContractServers = () => {
         fetchServerList();
     }, []);
 
-    // Saving selected server to localStorage
+    // Setting selected server to context & localStorage
     useEffect(() => {
         if (selectedServerIndex == null || !contractServers.length) return;
 
         const selectedServerUrl =
             contractServers[selectedServerIndex].server_url;
         const selectedServerName = contractServers[selectedServerIndex].name;
+        const sanitizedSelectedServerName = selectedServerName.replaceAll('"', "");
+        const baseServerUrl = selectedServerUrl.match(/^(?:server.)(.*)/)?.[1];
+        const selectedServerStatsUrl = `stats.${baseServerUrl}`;
 
-        localStorage.setItem("ORBITEZ_SERVER_URL", selectedServerUrl);
-        localStorage.setItem("ORBITEZ_SERVER_NAME", selectedServerName);
+        setServerName(sanitizedSelectedServerName);
+        setServerUrl(selectedServerUrl);
+        setStatsUrl(selectedServerStatsUrl);
     }, [contractServers, selectedServerIndex]);
 
     return {

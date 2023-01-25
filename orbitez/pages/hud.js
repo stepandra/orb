@@ -12,20 +12,21 @@ import { renderInner } from "@components/agar-client/agar-client-html";
 import InGameLeaderboard from "@components/InGameLeaderboard/InGameLeaderboard";
 import { route } from "next/dist/server/router";
 
+import { useServerContext } from "@context/ServerContext";
+
 const signalR = require("@microsoft/signalr");
 
 export default function Hud() {
     const [endBlock, setEndBlock] = useState(0);
-    const [server, setServer] = useState("ws.orbitez.io");
     const [currentBlock, setCurrentBlock] = useState(0);
     const [shouldRenderMain, setShouldRenderMain] = useState(false);
     const router = useRouter();
 
+    const { serverName, serverUrl, statsUrl } = useServerContext();
+
     useEffect(() => {
-        const ls_server = "localhost:443"; // localStorage.getItem('ORBITEZ_SERVER_URL') || 'ws.orbitez.io'
         const gateway =
             localStorage.getItem("ipfs-gateway") || "gateway.ipfs.io";
-        setServer(ls_server);
         if (!localStorage.getItem("skinLink")) {
             localStorage.setItem(
                 "skinLink",
@@ -48,11 +49,13 @@ export default function Hud() {
 
     useEffect(() => {
         let shouldRedirect = true;
+
         const redirectWithLeaderboard = async () => {
             shouldRedirect = false;
-            const server = localStorage.getItem("ORBITEZ_SERVER_NAME");
+
             const res = await axios.post("/api/get-signed-leaderboard", {
-                server,
+                serverName,
+                statsUrl
             });
 
             router.push({
@@ -230,7 +233,7 @@ export default function Hud() {
                 {shouldRenderMain && (
                     <main
                         className='hud'
-                        dangerouslySetInnerHTML={renderInner(server)}></main>
+                        dangerouslySetInnerHTML={renderInner(serverUrl)}></main>
                 )}
 
                 <footer>

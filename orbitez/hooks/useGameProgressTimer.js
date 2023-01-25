@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useServerContext } from '@context/ServerContext';
 import {
     BASE_TZKT_API_URL,
     BASE_TZSTATS_API_URL,
@@ -16,6 +17,8 @@ const useGameProgressTimer = (blocksRemaining) => {
         optimisticGameRemainingPercentage,
         setOptimisticGameRemainingPercentage
     ] = useState(null);
+
+    const { serverName } = useServerContext();
 
     // Setting optimistic game remaining percentage
     useEffect(() => {
@@ -80,9 +83,6 @@ const useGameProgressTimer = (blocksRemaining) => {
 
     // Fetching game duration for current room (in blocks)
     useEffect(() => {
-        const serverName = localStorage.getItem("ORBITEZ_SERVER_NAME");
-        const sanitizedServerName = serverName.replaceAll('"', "");
-
         const controller = new AbortController();
 
         const fetchGameDuration = async () => {
@@ -92,7 +92,7 @@ const useGameProgressTimer = (blocksRemaining) => {
                     url: `/contracts/${CONTRACT_ADDRESS}/storage`,
                     baseURL: BASE_TZKT_API_URL
                 });
-                const durationInBlocks = parseInt(res.data.room[sanitizedServerName]?.distance);
+                const durationInBlocks = parseInt(res.data.room[serverName]?.distance);
                 setGameDuration(durationInBlocks);
             } catch (error) {
                 console.error(error);
