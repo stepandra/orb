@@ -6,7 +6,8 @@ import axios from "axios";
 import inMemoryCache from "memory-cache";
 
 export default async function handler(req, res) {
-    const { server } = req.body;
+    const { serverName, statsUrl } = req.body;
+
     var oracle = new InMemorySigner(process.env.SIGNING_PRIVATE_KEY);
     const RPC_URL = "https://rpc.tzkt.io/ghostnet";
     const Tezos = new TezosToolkit(RPC_URL);
@@ -21,14 +22,12 @@ export default async function handler(req, res) {
 
     // Collect leaderboard data
     let leaderboard;
-    leaderboard = inMemoryCache.get(server);
+    leaderboard = inMemoryCache.get(serverName);
 
     if (leaderboard == undefined) {
-        const result = await axios.get(
-            "https://stats.orbitez-main-fra.orbitez.io/"
-        );
+        const result = await axios.get(`https://${statsUrl}`);
         leaderboard = result.data.leaderboard;
-        inMemoryCache.put(server, leaderboard, 300000); //cache for 5 min
+        inMemoryCache.put(serverName, leaderboard, 300000); //cache for 5 min
     }
 
     const newMapfromLiteral = [];
