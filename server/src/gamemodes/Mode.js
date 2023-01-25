@@ -10,6 +10,7 @@ class Mode {
         this.haveTeams = false; // True = gamemode uses teams, false = gamemode doesnt use teams
         this.specByLeaderboard = false; // false = spectate from player list instead of leaderboard
         this.IsTournament = false;
+        this.playersInRoom = [];
     }
     // Override these
     onServerInit(server) {
@@ -46,6 +47,8 @@ class Mode {
                     `https://api.ghostnet.tzkt.io/v1/contracts/${contractAddress}/storage`
                 )
                 .then((res) => {
+                    this.playersInRoom =
+                        res.data.server[serverName]?.players || [];
                     return {
                         endBlock: res.data.room[serverName]?.finish_block,
                     };
@@ -82,8 +85,34 @@ class Mode {
     }
 
     onTick(server) {
-        // Called on every game tick
+        const allowedPlayersSet = new Set(this.playersInRoom);
+        const encounteredPlayers = new Map();
+
+        const killPlayer = (client) => {
+            if (!client || !client.cells) return;
+            while (client.cells.length) server.removeNode(client.cells[0]);
+        };
+
+        if (this.playersInRoom.length) {
+            for (const socket of server.clients) {
+                const client = socket.player;
+                const name = client._name;
+                // Kill users whos names aren't in the storage
+                if (!allowedPlayersSet.has(name)) {
+                    killPlayer(client);
+                } else {
+                    // Kill users who are present two or more times in the game
+                    if (encounteredPlayers.has(name)) {
+                        const dupeClient = encounteredPlayers.get(name);
+                        killPlayer(client);
+                        killPlayer(dupeClient);
+                    }
+                    encounteredPlayers.set(name, client);
+                }
+            }
+        }
     }
+
     onPlayerInit(player) {
         // Called after a player object is constructed
     }
