@@ -85,22 +85,26 @@ export default function WaitingRoom() {
                                 : "Loading players list..."}
                         </h2>
                         <ul className='listBlock__list'>
-                            {waitRoom.map((el) =>
-                                el === address ? (
+                            {waitRoom.map((player) =>
+                                player === address ? (
                                     <li
+                                        key={player}
                                         style={{
                                             overflow: "hidden",
                                             textOverflow: "ellipsis",
                                             wordWrap: "nowrap",
                                         }}
-                                        className='listBlock__item listBlock__item--active'>
-                                        {el}
+                                        className='listBlock__item listBlock__item--active'
+                                    >
+                                        {player}
                                     </li>
                                 ) : (
                                     <li
+                                        key={player}
                                         style={{ overflow: "hidden" }}
-                                        className='listBlock__item'>
-                                        {el}
+                                        className='listBlock__item'
+                                    >
+                                        {player}
                                     </li>
                                 )
                             )}
