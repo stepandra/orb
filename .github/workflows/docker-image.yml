@@ -37,4 +37,4 @@ jobs:
       run: docker tag orbitez:latest orbitez/orb-game-server-main:latest
     
     - name: Push remote to Docker Hub
-      run: docker tag orbitez:latest orbitez/orb-game-server-main:latest
+      run: docker push orbitez/orb-game-server-main:latest
