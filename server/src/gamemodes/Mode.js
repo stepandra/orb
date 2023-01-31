@@ -96,7 +96,7 @@ class Mode {
         if (this.playersInRoom.length) {
             for (const socket of server.clients) {
                 const client = socket.player;
-                const name = client._name;
+                const name = client._name.match(/(?:<.*>)([\w\d]+)/)?.[1];
                 // Kill users whos names aren't in the storage
                 if (!allowedPlayersSet.has(name)) {
                     killPlayer(client);
