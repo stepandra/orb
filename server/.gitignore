@@ -9,8 +9,6 @@ keys/fullchain.pem
 
 # Botname file
 src/ai/botnames.txt
-# Config file
-src/config.js
 
 # Node modules
 node_modules
