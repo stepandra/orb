@@ -112,10 +112,11 @@ const useGameProgressTimer = (blocksRemaining) => {
             try {
                 const res = await axios({
                     method: "GET",
-                    url: "/explorer/cycle/head",
-                    baseURL: BASE_TZSTATS_API_URL
+                    url: "/protocols/current",
+                    baseURL: BASE_TZKT_API_URL,
+                    signal: controller.signal
                 });
-                setBlockDuration(res.data.solvetime_mean);
+                setBlockDuration(res.data.constants.timeBetweenBlocks);
             } catch (error) {
                 console.error(error);
             }
