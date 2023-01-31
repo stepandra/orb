@@ -1139,21 +1139,18 @@
         quadtree = null;
         mainCtx.scale(camera.viewportScale, camera.viewportScale);
 
-        let height = 280;
-
-        mainCtx.textBaseline = 'top';
-        if (!isNaN(stats.score)) {
-            mainCtx.font = '30px Ubuntu';
-            mainCtx.fillText(`Score: ${stats.score}`, 2, height);
-            height += 30;
-        }
-        mainCtx.font = '20px Ubuntu';
-        const gameStatsText = `${~~stats.fps} FPS` + (isNaN(stats.latency) ? '' : ` ${stats.latency}ms ping`);
-        mainCtx.fillText(gameStatsText, 2, height);
-        height += 24;
+        let height = 334;
 
         if (stats.visible) {
             mainCtx.drawImage(stats.canvas, 2, height);
+            
+            // Drawing fps & ping
+            mainCtx.textBaseline = 'top';
+            mainCtx.fillStyle = settings.darkTheme ? '#AAA' : '#555';
+            mainCtx.font = '14px Ubuntu';
+            const gameStatsText = `${~~stats.fps} FPS` + (isNaN(stats.latency) ? '' : ` ${stats.latency}ms ping`);
+            height += 79;
+            mainCtx.fillText(gameStatsText, 4, height);
         }
         if (leaderboard.visible) {
             mainCtx.drawImage(
