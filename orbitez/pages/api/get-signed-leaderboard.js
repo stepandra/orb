@@ -11,57 +11,64 @@ export default async function handler(req, res) {
     var oracle = new InMemorySigner(process.env.SIGNING_PRIVATE_KEY);
     const RPC_URL = "https://rpc.tzkt.io/ghostnet";
     const Tezos = new TezosToolkit(RPC_URL);
-    let contractServerList = [];
 
     const contract = await Tezos.contract.at(CONTRACT_ADDRESS);
     const storage = await contract.storage();
 
-    for (let [key, value] of storage.server.valueMap) {
-        contractServerList.push({ ...value, name: key });
-    }
+    const contractServersMap = storage.server.valueMap;
+
+    const currentServerPlayers = contractServersMap.get(
+        `"${serverName}"`
+    )?.players;
+
+    const leaderboardMap = new Map();
+
+    currentServerPlayers.forEach((playerName) => {
+        leaderboardMap.set(playerName, 0);
+    });
 
     // Collect leaderboard data
-    let leaderboard;
-    leaderboard = inMemoryCache.get(serverName);
+    let rawLeaderboard;
+    rawLeaderboard = inMemoryCache.get(serverName);
 
-    if (leaderboard == undefined) {
-        const result = await axios.get(`https://${statsUrl}`);
-        leaderboard = result.data.leaderboard;
-        inMemoryCache.put(serverName, leaderboard, 300000); //cache for 5 min
+    if (rawLeaderboard == undefined) {
+        const result = await axios.get(`http://${statsUrl}`);
+        rawLeaderboard = result.data.leaderboard;
+        inMemoryCache.put(serverName, rawLeaderboard, 300000); //cache for 5 min
     }
 
-    const newMapfromLiteral = [];
-
-    for (let record of leaderboard) {
+    for (let record of rawLeaderboard) {
         if (record.name == "") continue;
         let [, skin, address] = /^(?:\<([^}]*)\>)?([^]*)/.exec(
             record.name || ""
         );
-        newMapfromLiteral.push({
-            address,
-            amount: Math.round(record.score),
-        });
+        leaderboardMap.set(address, Math.round(record.score));
     }
+
+    const fullLeaderboard = Array.from(leaderboardMap, ([address, amount]) => ({
+        address,
+        amount
+    }));
 
     const listToMichelson = (list) => {
         return list.map((el) => ({
             prim: "Pair",
-            args: [{ string: el.address }, { int: el.amount + "" }],
+            args: [{ string: el.address }, { int: el.amount + "" }]
         }));
     };
 
     Tezos.rpc
         .packData({
-            data: listToMichelson(newMapfromLiteral),
+            data: listToMichelson(fullLeaderboard),
             type: {
                 prim: "list",
                 args: [
                     {
                         prim: "pair",
-                        args: [{ prim: "string" }, { prim: "nat" }],
-                    },
-                ],
-            },
+                        args: [{ prim: "string" }, { prim: "nat" }]
+                    }
+                ]
+            }
         })
         .then((wrappedPacked) => {
             const hexScore = wrappedPacked.packed;
@@ -71,8 +78,9 @@ export default async function handler(req, res) {
                     value: s.prefixSig,
                     packed: wrappedPacked.packed,
                     signed: s.bytes,
-                    leaderboard: newMapfromLiteral,
+                    leaderboard: fullLeaderboard
                 });
+                res.end();
             });
         });
 }
