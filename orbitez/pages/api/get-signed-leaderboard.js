@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { TezosToolkit } from "@taquito/taquito";
 import { InMemorySigner } from "@taquito/signer";
-import { CONTRACT_ADDRESS } from "../../constants";
+import { CONTRACT_ADDRESS, BASE_TZKT_API_URL } from "../../constants";
 import axios from "axios";
 import inMemoryCache from "memory-cache";
 
@@ -16,10 +16,20 @@ export default async function handler(req, res) {
     const storage = await contract.storage();
 
     const contractServersMap = storage.server.valueMap;
+    const contractRoomsMap = storage.room.valueMap;
 
     const currentServerPlayers = contractServersMap.get(
         `"${serverName}"`
     )?.players;
+
+    const { data } = await axios({
+        method: "GET",
+        url: "/head",
+        baseURL: BASE_TZKT_API_URL
+    });
+    const currentBlock = data.level;
+
+    const finishBlock = contractRoomsMap.get(`"${serverName}"`)?.finish_block.toNumber();
 
     const leaderboardMap = new Map();
 
@@ -34,7 +44,10 @@ export default async function handler(req, res) {
     if (rawLeaderboard == undefined) {
         const result = await axios.get(`http://${statsUrl}`);
         rawLeaderboard = result.data.leaderboard;
-        inMemoryCache.put(serverName, rawLeaderboard, 300000); //cache for 5 min
+        // Only caching result when the game ended
+        if (currentBlock === finishBlock) {
+            inMemoryCache.put(serverName, rawLeaderboard, 300000); // cache for 5 min
+        }
     }
 
     for (let record of rawLeaderboard) {
