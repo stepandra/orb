@@ -8,6 +8,7 @@ import {
     BASE_TZKT_API_URL,
 } from "../../constants";
 import recursivelyTryAddingBot from "./infra/recursivelyTryAddingBot";
+import pendingBotTransactions from "./infra/PendingBotTransactions";
 
 export default async function addBot(serverName) {
     return new Promise(async (resolve, reject) => {
@@ -24,6 +25,20 @@ export default async function addBot(serverName) {
                     status: 400,
                     json: {
                         error: `The requested server '${serverName}' is not registered in the contract`,
+                    },
+                });
+                return;
+            };
+
+            // Checking if there isn't a pending bot adding transaction for this server
+            if (
+                pendingBotTransactions.isThereAPendingTransaction(serverName) &&
+                !pendingBotTransactions.isPendingTransactionConfirmed(serverName)
+            ) {
+                reject({
+                    status: 500,
+                    json: {
+                        error: "A request for the addition of a bot for this server has already been sent",
                     },
                 });
                 return;
@@ -152,6 +167,7 @@ export default async function addBot(serverName) {
                     error: "Cannot add a bot",
                 },
             });
+            console.error(error);
         }
     });
 }
