@@ -115,7 +115,7 @@ class Server {
         // Player bots (Experimental)
         if (this.config.serverBots) {
             for (var i = 0; i < this.config.serverBots; i++)
-                this.bots.addBot();
+                this.bots.addBot({useRandomName: true});
             Logger.info("Added " + this.config.serverBots + " player bots");
         }
     }
@@ -240,7 +240,7 @@ class Server {
         this.movingNodes = [];
         if (this.config.serverBots) {
             for (var i = 0; i < this.config.serverBots; i++)
-                this.bots.addBot();
+                this.bots.addBot({useRandomName: true});
             Logger.info(`Added ${this.config.serverBots} player bots`);
         }
         this.commands;

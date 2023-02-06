@@ -166,7 +166,7 @@ const commands = [
     new Command("addbot", "adds AI bots to the server", "<count>", UserRoleEnum.ADMIN, (player, args) => {
         const count = parseInt(args[1]);
         if (isNaN(count)) return send(player, "ERROR: missing count argument.");
-        for (let i = 0; i < count; ++i) player.server.bots.addBot();
+        for (let i = 0; i < count; ++i) player.server.bots.addBot({useRandomName: true});
         Logger.warn(player.socket.remoteAddress + ` ADDED ${count} BOTS`);
         send(player, `Added ${count} Bots`);
     }),

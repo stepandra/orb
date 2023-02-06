@@ -24,13 +24,13 @@ class BotLoader {
         this.server = server;
         this.botCount = 0;
     }
-    addBot() {
+    addBot({botName = undefined, useRandomName = false}) {
         // Create a FakeSocket instance and assign its properties.
         const socket = new FakeSocket(this.server);
         socket.player = new BotPlayer(this.server, socket);
         socket.client = new Client(this.server, socket);
 
-        const name = botnames[this.botCount++ | 0];
+        const name = useRandomName ? botnames[this.botCount++ | 0] : botName;
 
         // Add to client list and spawn.
         this.server.clients.push(socket);
