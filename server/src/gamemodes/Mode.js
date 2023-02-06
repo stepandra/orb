@@ -11,6 +11,14 @@ class Mode {
         this.specByLeaderboard = false; // false = spectate from player list instead of leaderboard
         this.IsTournament = false;
         this.playersInRoom = [];
+        this.endBlock = 0;
+        this.botNames = [
+            'tz1MbdMtM84TvhHundn2EUfZfvTpZY5G348z',
+            'tz1exhJ7rXiMNuHQEPGLuXZAwmtQwkQUjv94',
+            'tz1ZrPyokyWHPWFY6mdNHJevnoz4i29hW527',
+            'tz1P11BBtgafonerKE2E1x91b8CKSE2tAnf9',
+            'tz1L4xFDyB3HQV5YXkQxu5t5BWHdwQQe4NJr'
+        ]
     }
     // Override these
     onServerInit(server) {
@@ -36,8 +44,10 @@ class Mode {
         connection.onclose(init);
 
         connection.on("blocks", async (msg) => {
-            const contractAddress = process.env.CONTRACT_ADDRESS;
-            const serverName = process.env.SERVER_NAME;
+            const contractAddress = 'KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH';
+            const serverName = 'Orbitez-main-FRA';
+
+            const currentBlock = msg.state;
 
             console.log(
                 `connecting to contract ${contractAddress}, room ${serverName}`
@@ -47,19 +57,24 @@ class Mode {
                     `https://api.ghostnet.tzkt.io/v1/contracts/${contractAddress}/storage`
                 )
                 .then((res) => {
-                    this.playersInRoom =
-                        res.data.server[serverName]?.players || [];
-                    return {
-                        endBlock: res.data.room[serverName]?.finish_block,
+                    const endBlock = Number(res.data.room[serverName]?.finish_block);
+                    this.endBlock = endBlock;
+
+                    if (endBlock !== 0 && currentBlock < endBlock) {
+                        this.playersInRoom =
+                            res.data.server[serverName]?.players || [];
+                    } else {
+                        this.playersInRoom = [];
                     };
+                    
+                    return { endBlock };
                 });
 
-            if (msg.state > Number(endBlock)) {
+            if (currentBlock > endBlock) {
                 console.log({
-                    currentBlock: msg.state,
-                    endBlock: Number(endBlock),
+                    currentBlock: currentBlock,
+                    endBlock: endBlock,
                 });
-                this.killall(server);
             }
         });
 
@@ -72,14 +87,25 @@ class Mode {
         server.run = true;
     }
 
-    killall(server) {
+    killPlayer(socket, server) {
+        const { player } = socket;
+        if (!player || !player.cells) return;
+
+        while (player.cells.length) server.removeNode(player.cells[0]);
+
+        if (player.isBot) {
+            socket.close();
+            return;
+        };
+    };
+
+    killAll(server) {
         // Check if server is empty.
         if (!server.clients.length) {
             console.log("The server is empty.");
         }
         for (const socket of server.clients) {
-            const client = socket.player;
-            while (client.cells.length) server.removeNode(client.cells[0]);
+            this.killPlayer(socket, server);
         }
         console.log("Removed all players.");
     }
@@ -87,28 +113,48 @@ class Mode {
     onTick(server) {
         const allowedPlayersSet = new Set(this.playersInRoom);
         const encounteredPlayers = new Map();
+        const serverPlayers = server.clients.map((socket) => {
+            const playerName = socket.player._name;
+            return playerName;
+        });
+        const alivePlayers = server.clients.flatMap((socket) => {
+            const { player } = socket;
 
-        const killPlayer = (client) => {
-            if (!client || !client.cells) return;
-            while (client.cells.length) server.removeNode(client.cells[0]);
+            if (!player || !player.cells || player.cells.length === 0) return [];
+
+            return [ player._name ];
+        });
+
+        this.botNames.forEach((botName) => {
+            if (
+                !allowedPlayersSet.has(botName) ||
+                serverPlayers.includes(botName) ||
+                this.endBlock === 0
+            ) return;
+
+            server.bots.addBot({botName, useRandomName: false});
+        });
+
+        // Kill not allowed players
+        if (alivePlayers.length !== 0 && allowedPlayersSet.size === 0) {
+            this.killAll(server);
+            return;
         };
-
-        if (this.playersInRoom.length) {
-            for (const socket of server.clients) {
-                const client = socket.player;
-                const name = client._name.match(/(?:<.*>)([\w\d]+)/)?.[1];
-                // Kill users whos names aren't in the storage
-                if (!allowedPlayersSet.has(name)) {
-                    killPlayer(client);
-                } else {
-                    // Kill users who are present two or more times in the game
-                    if (encounteredPlayers.has(name)) {
-                        const dupeClient = encounteredPlayers.get(name);
-                        killPlayer(client);
-                        killPlayer(dupeClient);
-                    }
-                    encounteredPlayers.set(name, client);
+        
+        for (const socket of server.clients) {
+            const client = socket.player;
+            const name = client._name.match(/(?:<.*>)?([\w\d]+)/)?.[1];
+            // Kill users whos names aren't in the storage
+            if (!allowedPlayersSet.has(name)) {
+                this.killPlayer(client);
+            } else {
+                // Kill users who are present two or more times in the game
+                if (encounteredPlayers.has(name)) {
+                    const dupeClient = encounteredPlayers.get(name);
+                    this.killPlayer(client);
+                    this.killPlayer(dupeClient);
                 }
+                encounteredPlayers.set(name, client);
             }
         }
     }
