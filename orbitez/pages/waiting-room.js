@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 import Head from "next/head";
 import { CONTRACT_ADDRESS, MIN_BOT_JOIN_TIME, BASE_TZKT_API_URL } from "../constants";
 import { useRouter } from "next/router";
@@ -11,6 +12,7 @@ import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
 import { useServerContext } from '@context/ServerContext';
 
 const signalR = require("@microsoft/signalr");
+axiosRetry(axios, { retries: 3 });
 
 export default function WaitingRoom() {
     const { Tezos, address } = useTezos();
