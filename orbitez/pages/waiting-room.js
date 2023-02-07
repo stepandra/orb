@@ -36,34 +36,21 @@ export default function WaitingRoom() {
     };
 
     useEffect(() => {
+        if (waitRoom.length === 0) return;
+
+        const controller = new AbortController();
+
         const getBotRequestDelay = async () => {
-            const contract = await Tezos.contract.at(CONTRACT_ADDRESS);
-            const storage = await contract.storage();
-            const contractPlayers = storage.player.valueMap;
-
-            // Filter by server
-            const currentServerWaitRoomPlayers = [];
-
-            contractPlayers.forEach((playerData, playerName) => {
-                if (playerData.room_id === serverName) {
-                    currentServerWaitRoomPlayers.push({
-                        name: playerName.match(/[a-zA-Z0-9]+/)?.[0],
-                        ...playerData,
-                    });
-                }
-            });
-
-            if (currentServerWaitRoomPlayers.length === 0) return;
 
             // Checking which of the players in the waiting room has the largest entry_block ...
             // .. value - this will be the most recently joined player
     
             let latestJoinedPlayer;
     
-            if (currentServerWaitRoomPlayers.length === 1) {
-                latestJoinedPlayer = currentServerWaitRoomPlayers[0];
+            if (waitRoom.length === 1) {
+                latestJoinedPlayer = waitRoom[0];
             } else {
-                latestJoinedPlayer = currentServerWaitRoomPlayers.reduce(
+                latestJoinedPlayer = waitRoom.reduce(
                     (prevPlayer, currPlayer) => {
                         const prevPlayerEntryBlock = prevPlayer.entry_block.toNumber();
                         const currPlayerEntryBlock = currPlayer.entry_block.toNumber();
@@ -84,6 +71,7 @@ export default function WaitingRoom() {
                 method: "GET",
                 url: `/blocks/${latestJoinedPlayerBlock}/timestamp`,
                 baseURL: BASE_TZKT_API_URL,
+                signal: controller.signal
             });
     
             const latestJoinedTimestamp = new Date(
@@ -104,7 +92,9 @@ export default function WaitingRoom() {
         };
 
         getBotRequestDelay();
-    }, []);
+
+        return () => controller.abort();
+    }, [ waitRoom ]);
 
     useEffect(() => {
         if (botRequestDelay === null || waitRoom.length === 0) return;
@@ -137,17 +127,25 @@ export default function WaitingRoom() {
         const poll = async () => {
             const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
             const storage = await contract.storage();
+            const contractPlayers = storage.player.valueMap;
+
+            // Filter by server
+            const currentServerWaitRoomPlayers = [];
+
+            contractPlayers.forEach((playerData, playerName) => {
+                if (playerData.room_id === serverName) {
+                    currentServerWaitRoomPlayers.push({
+                        name: playerName.match(/[a-zA-Z0-9]+/)?.[0],
+                        ...playerData,
+                    });
+                }
+            });
+
             setMintHash(localStorage.getItem("mintHash"));
             setRoomSize(storage.room.valueMap.get(`"${serverName}"`).size.c[0]);
-            const players = [];
-            for (let [key, value] of storage.player.valueMap) {
-                if (value.room_id === serverName) {
-                    players.push(key.replaceAll('"', ""));
-                }
-            }
 
             if (
-                players.length ===
+                currentServerWaitRoomPlayers.length ===
                 storage.room.valueMap.get(`"${serverName}"`).size.c[0]
             ) {
                 const endBlock =
@@ -157,12 +155,12 @@ export default function WaitingRoom() {
                     query: { endBlock },
                 });
             } else {
-                setWaitRoom((currentWaitRoom) => {
-                    if (JSON.stringify(currentWaitRoom) === JSON.stringify(players)) {
-                        return currentWaitRoom;
+                setWaitRoom((prevWaitRoom) => {
+                    if (JSON.stringify(prevWaitRoom) === JSON.stringify(currentServerWaitRoomPlayers)) {
+                        return prevWaitRoom;
                     };
 
-                    return players;
+                    return currentServerWaitRoomPlayers;
                 });
                 pollTimeout = setTimeout(() => poll(), 500);
             }
@@ -192,9 +190,9 @@ export default function WaitingRoom() {
                         </h2>
                         <ul className='listBlock__list'>
                             {waitRoom.map((player) =>
-                                player === address ? (
+                                player.name === address ? (
                                     <li
-                                        key={player}
+                                        key={player.name}
                                         style={{
                                             overflow: "hidden",
                                             textOverflow: "ellipsis",
@@ -202,15 +200,15 @@ export default function WaitingRoom() {
                                         }}
                                         className='listBlock__item listBlock__item--active'
                                     >
-                                        {player}
+                                        {player.name}
                                     </li>
                                 ) : (
                                     <li
-                                        key={player}
+                                        key={player.name}
                                         style={{ overflow: "hidden" }}
                                         className='listBlock__item'
                                     >
-                                        {player}
+                                        {player.name}
                                     </li>
                                 )
                             )}
