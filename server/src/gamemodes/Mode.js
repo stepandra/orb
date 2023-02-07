@@ -44,8 +44,8 @@ class Mode {
         connection.onclose(init);
 
         connection.on("blocks", async (msg) => {
-            const contractAddress = 'KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH';
-            const serverName = 'Orbitez-main-FRA';
+            const contractAddress = process.env.CONTRACT_ADDRESS;
+            const serverName = process.env.SERVER_NAME;
 
             const currentBlock = msg.state;
 
@@ -146,13 +146,13 @@ class Mode {
             const name = client._name.match(/(?:<.*>)?([\w\d]+)/)?.[1];
             // Kill users whos names aren't in the storage
             if (!allowedPlayersSet.has(name)) {
-                this.killPlayer(client);
+                this.killPlayer(client, server);
             } else {
                 // Kill users who are present two or more times in the game
                 if (encounteredPlayers.has(name)) {
                     const dupeClient = encounteredPlayers.get(name);
-                    this.killPlayer(client);
-                    this.killPlayer(dupeClient);
+                    this.killPlayer(client, server);
+                    this.killPlayer(dupeClient, server);
                 }
                 encounteredPlayers.set(name, client);
             }

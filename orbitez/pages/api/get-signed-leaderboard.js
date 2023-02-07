@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     rawLeaderboard = inMemoryCache.get(serverName);
 
     if (rawLeaderboard == undefined) {
-        const result = await axios.get(`http://${statsUrl}`);
+        const result = await axios.get(`https://${statsUrl}`);
         rawLeaderboard = result.data.leaderboard;
         // Only caching result when the game ended
         if (currentBlock === finishBlock) {
