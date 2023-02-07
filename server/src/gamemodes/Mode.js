@@ -13,11 +13,11 @@ class Mode {
         this.playersInRoom = [];
         this.endBlock = 0;
         this.botNames = [
-            'tz1MbdMtM84TvhHundn2EUfZfvTpZY5G348z',
-            'tz1exhJ7rXiMNuHQEPGLuXZAwmtQwkQUjv94',
-            'tz1ZrPyokyWHPWFY6mdNHJevnoz4i29hW527',
-            'tz1P11BBtgafonerKE2E1x91b8CKSE2tAnf9',
-            'tz1L4xFDyB3HQV5YXkQxu5t5BWHdwQQe4NJr'
+            '<https://gateway.ipfs.io/ipfs/QmRoRHTVfy4S3j9uF9xuwgfRn648fVLN7hAd9NcjmG1F3a>tz1MbdMtM84TvhHundn2EUfZfvTpZY5G348z',
+            '<https://gateway.ipfs.io/ipfs/QmVeVq9pk6SWBVhiCS946TjzxRGxuJo4BtfzLYZ12Rk9Q3>tz1exhJ7rXiMNuHQEPGLuXZAwmtQwkQUjv94',
+            '<https://gateway.ipfs.io/ipfs/QmfT9rxguu53PxCsnvczEDrctYW12qHGWGfu1t2AgTEx8f>tz1ZrPyokyWHPWFY6mdNHJevnoz4i29hW527',
+            '<https://gateway.ipfs.io/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi>tz1P11BBtgafonerKE2E1x91b8CKSE2tAnf9',
+            '<https://gateway.ipfs.io/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi>tz1L4xFDyB3HQV5YXkQxu5t5BWHdwQQe4NJr'
         ]
     }
     // Override these
@@ -60,7 +60,7 @@ class Mode {
                     const endBlock = Number(res.data.room[serverName]?.finish_block);
                     this.endBlock = endBlock;
 
-                    if (endBlock !== 0 && currentBlock < endBlock) {
+                    if (endBlock !== 0 && currentBlock <= endBlock) {
                         this.playersInRoom =
                             res.data.server[serverName]?.players || [];
                     } else {
@@ -125,14 +125,14 @@ class Mode {
             return [ player._name ];
         });
 
-        this.botNames.forEach((botName) => {
+        this.botNames.forEach((botNameWithSkin) => {
+            const botName = botNameWithSkin.match(/(?:<.*>)?([\w\d]+)/)?.[1];
             if (
                 !allowedPlayersSet.has(botName) ||
-                serverPlayers.includes(botName) ||
-                this.endBlock === 0
+                serverPlayers.includes(botNameWithSkin)
             ) return;
 
-            server.bots.addBot({botName, useRandomName: false});
+            server.bots.addBot({botName: botNameWithSkin, useRandomName: false});
         });
 
         // Kill not allowed players
