@@ -17,6 +17,6 @@ export default async function handler(req, res) {
         console.log(`Successfully added a bot for server ${serverName}`);
     } catch (error) {
         res.status(error.status).json(error.json);
-        console.log(`Error adding a bot, for server ${serverName}. Status: ${error.status}, ${error.json}`);
+        console.log(`Error adding a bot, for server ${serverName}. Status: ${error.status}, ${JSON.stringify(error.json)}`);
     }
 }

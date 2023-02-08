@@ -32,7 +32,7 @@ class PendingBotTransactions {
         });
 
         if (isConfirmed) {
-            removeTransaction(serverName);
+            this.removeTransaction(serverName);
             return true;
         } else {
             return false;

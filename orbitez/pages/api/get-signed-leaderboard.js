@@ -95,7 +95,6 @@ export default async function handler(req, res) {
                     signed: s.bytes,
                     leaderboard: fullLeaderboard
                 });
-                res.end();
             });
         });
 }
