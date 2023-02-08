@@ -63,6 +63,8 @@ export default async function handler(req, res) {
         amount
     }));
 
+    fullLeaderboard.sort((a, b) => b.amount - a.amount);
+
     const listToMichelson = (list) => {
         return list.map((el) => ({
             prim: "Pair",
