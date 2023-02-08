@@ -12,7 +12,7 @@ import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
 import { useServerContext } from '@context/ServerContext';
 
 const signalR = require("@microsoft/signalr");
-axiosRetry(axios, { retries: 3 });
+axiosRetry(axios, { retries: 3, retryCondition: () => true });
 
 export default function WaitingRoom() {
     const { Tezos, address } = useTezos();
