@@ -122,11 +122,11 @@ export default async function addBot(serverName) {
 
             const currentTimestamp = Date.now();
 
-            // Calculating whether 5 minutes have passed since the last player joined
+            // Calculating whether MIN_BOT_JOIN_TIME have passed since the last player joined
 
             const timeElapsedSinceLastJoin = currentTimestamp - latestJoinedTimestamp;
 
-            // If 5 minutes have not elapsed responding with an error
+            // If MIN_BOT_JOIN_TIME have not elapsed responding with an error
             if (timeElapsedSinceLastJoin < MIN_BOT_JOIN_TIME) {
                 reject({
                     status: 500,
@@ -137,7 +137,7 @@ export default async function addBot(serverName) {
                 return;
             }
 
-            // If 5 minutes have elapsed:
+            // If MIN_BOT_JOIN_TIME have elapsed:
             // Creating an availableBots array from the bots, who are not registered as players in the contract
             const availableBots = BOTS.filter(
                 (bot) => !contractPlayers.has(`"${bot.address}"`),

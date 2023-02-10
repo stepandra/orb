@@ -80,7 +80,7 @@ export default function WaitingRoom() {
     
             const currentTimestamp = Date.now();
     
-            // Calculating whether 5 minutes have passed since the last player joined
+            // Calculating whether MIN_BOT_JOIN_TIME have passed since the last player joined
     
             const timeElapsedSinceLastJoin = currentTimestamp - latestJoinedTimestamp;
     
