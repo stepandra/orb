@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 5000",
     "staging": "next start -p 5454",
     "lint": "eslint ./components/** ./pages/** -c .eslintrc.json --ext js,jsx",
     "lint-fix": "eslint ./components/** ./pages/** -c .eslintrc.json --fix --ext js,jsx"
