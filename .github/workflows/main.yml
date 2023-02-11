@@ -32,4 +32,4 @@ jobs:
           nvm use --lts=gallium
           npm i
           npm run build &&
-          pm2 reload Orbitez-staging
+          pm2 reload Orbitez-production
