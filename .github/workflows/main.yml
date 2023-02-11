@@ -23,7 +23,7 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd ./orbitez-staging/orbitez-secret/
+          cd ./orbitez-production/orbitez-secret/
           git reset --hard
           git pull https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/stepandra/orbitez-secret.git
           cd ./orbitez
