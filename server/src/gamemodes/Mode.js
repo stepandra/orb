@@ -113,10 +113,7 @@ class Mode {
     onTick(server) {
         const allowedPlayersSet = new Set(this.playersInRoom);
         const encounteredPlayers = new Map();
-        const serverPlayers = server.clients.map((socket) => {
-            const playerName = socket.player._name;
-            return playerName;
-        });
+        const serverPlayers = new Set(server.clients.map((socket) => socket.player._name));
         const alivePlayers = server.clients.flatMap((socket) => {
             const { player } = socket;
 
@@ -129,7 +126,7 @@ class Mode {
             const botName = botNameWithSkin.match(/(?:<.*>)?([\w\d]+)/)?.[1];
             if (
                 !allowedPlayersSet.has(botName) ||
-                serverPlayers.includes(botNameWithSkin)
+                serverPlayers.has(botNameWithSkin)
             ) return;
 
             server.bots.addBot({botName: botNameWithSkin, useRandomName: false});
