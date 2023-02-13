@@ -132,12 +132,15 @@ class Mode {
             server.bots.addBot({botName: botNameWithSkin, useRandomName: false});
         });
 
-        // Kill not allowed players
+        // Killing of not allowed players
+
+        // Kill everyone, when the game is not running and there are alive players / bots
         if (alivePlayers.length !== 0 && allowedPlayersSet.size === 0) {
             this.killAll(server);
             return;
         };
         
+        // When the game is running
         for (const socket of server.clients) {
             const client = socket.player;
             const name = client._name.match(/(?:<.*>)?([\w\d]+)/)?.[1];
