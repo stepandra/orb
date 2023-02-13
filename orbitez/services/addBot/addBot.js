@@ -131,7 +131,7 @@ export default async function addBot(serverName) {
                 reject({
                     status: 500,
                     json: {
-                        error: "The required 5 minutes to add a bot have not yet passed",
+                        error: "The required 2 minutes to add a bot have not yet passed",
                     },
                 });
                 return;
