@@ -27,4 +27,12 @@ export const BOTS = [
         address: process.env.BOT_5_ADDRESS,
         privateKey: process.env.BOT_5_PRIVATE_KEY,
     },
+    {
+        address: process.env.BOT_6_ADDRESS,
+        privateKey: process.env.BOT_6_PRIVATE_KEY,
+    },
+    {
+        address: process.env.BOT_7_ADDRESS,
+        privateKey: process.env.BOT_7_PRIVATE_KEY,
+    },
 ];

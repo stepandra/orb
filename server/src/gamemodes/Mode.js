@@ -17,7 +17,9 @@ class Mode {
             '<https://gateway.ipfs.io/ipfs/QmVeVq9pk6SWBVhiCS946TjzxRGxuJo4BtfzLYZ12Rk9Q3>tz1exhJ7rXiMNuHQEPGLuXZAwmtQwkQUjv94',
             '<https://gateway.ipfs.io/ipfs/QmfT9rxguu53PxCsnvczEDrctYW12qHGWGfu1t2AgTEx8f>tz1ZrPyokyWHPWFY6mdNHJevnoz4i29hW527',
             '<https://gateway.ipfs.io/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi>tz1P11BBtgafonerKE2E1x91b8CKSE2tAnf9',
-            '<https://gateway.ipfs.io/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi>tz1L4xFDyB3HQV5YXkQxu5t5BWHdwQQe4NJr'
+            '<https://gateway.ipfs.io/ipfs/Qma9TtfBcVpqe9K5M923SZa31NSPjbBm9zFyNMtcvaJb89>tz1L4xFDyB3HQV5YXkQxu5t5BWHdwQQe4NJr',
+            '<https://gateway.ipfs.io/ipfs/QmTnk8cSzUHUh56KpGKTnK2mpMgA3X6WAkmfsuKxsHbi9c>tz1YCQ44pjU4DJZoB7sMT1QymUbf8Nf71Sdr',
+            '<https://gateway.ipfs.io/ipfs/QmUnqxKgXpcuijLSWQd4D2ywmt2YyMxm1ib8iVUs5vVJY2>tz1LGQ1JFhy8FmJ7w1UrWx84rtJQRd6mM3CE'
         ]
     }
     // Override these
