@@ -4,7 +4,7 @@ export const CONTRACT_ADDRESS = 'KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH'
 export const NFT_ADDRESS = 'KT1QUPuQYpqmfUZ7MtE9AhJ11n7ce1mKyyMB'
 export const NFT_CONTRACT_ADDRESS = 'KT1AEVuykWeuuFX7QkEAMNtffzwhe1Z98hJS'
 
-export const MIN_BOT_JOIN_TIME = 300000; // 5 minutes in ms
+export const MIN_BOT_JOIN_TIME = 120000; // 2 minutes in ms
 
 export const BOTS = [
     {
