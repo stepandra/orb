@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -14,7 +14,9 @@ import { PlanetDataList } from "@components/PlanetDataList/PlanetDataList";
 import { DeploymentModal } from "@components/DeploymentModal/DeploymentModal";
 import { PayMethod } from "@components/PayMethod/PayMethod";
 import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
-import useContractServers from "@hooks/useContractServers";
+import ServerSelector from "@components/ServerSelector/ServerSelector";
+import { useSelectedServerContext } from "@context/SelectedServerContext";
+import { useContractServersContext } from "@context/ContractServersContext";
 
 const DEFAULT_GATEWAY = "gateway.ipfs.io";
 
@@ -42,7 +44,20 @@ export default function Dashboard() {
     const [planetSelected, setPlanetSelected] = useState(0);
     const [deploymentModalOpen, setDeploymentModalOpen] = useState(false);
 
-    const { contractServers, selectedServerIndex } = useContractServers();
+    const { serverName: selectedServerName } = useSelectedServerContext();
+    const { contractServers, selectedServerIndex } = useContractServersContext();
+
+    const isSelectedServerAvailable = useMemo(() => {
+        const selectedServer = contractServers[selectedServerIndex];
+
+        if (!selectedServer) return false;
+
+        if (selectedServer.isFull || selectedServer.isGameRunning) {
+            return false
+        } else {
+            return true;
+        };
+    }, [contractServers, selectedServerIndex]);
 
     // const [isDemoMode, setIsDemoMode] = useState(false);
 
@@ -183,18 +198,14 @@ export default function Dashboard() {
         const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);
 
         try {
-            const serverNameSanitized = contractServers[
-                selectedServerIndex
-            ]?.name.replaceAll('"', "");
-            console.log(serverNameSanitized, contractServers);
             await contract.methods
-                .enter_room(serverNameSanitized, serverNameSanitized)
+                .enter_room(selectedServerName, selectedServerName)
                 .send({ amount: 1 });
             router.push("/waiting-room");
         } catch (e) {
             console.log("Transaction rejected:", e);
         }
-    }, [Tezos, contractServers, selectedServerIndex]);
+    }, [Tezos]);
 
     const openDeploymentModal = useCallback(async () => {
         if (!isAuthLoaded) return;
@@ -238,6 +249,7 @@ export default function Dashboard() {
                         setPlanetSelected={setPlanetSelected}
                         planetSelected={planetSelected}
                     />
+                    <ServerSelector />
                 </div>
 
                 <div className="dashboard__center">
@@ -253,7 +265,7 @@ export default function Dashboard() {
                     />
                 </div>
 
-                <a
+                <button
                     className="btn btn--center btn--wide"
                     onClick={() =>
                         window.open(
@@ -263,21 +275,22 @@ export default function Dashboard() {
                     }
                 >
                     <span className="btn__iconPlus"></span> MINT NEW PLANET
-                </a>
+                </button>
 
-                <a
+                <button
                     className="btn btn--center"
                     onClick={address == "" ? connectAndReload : enterRoom}
+                    disabled={!isSelectedServerAvailable && address != ""}
                 >
                     {address == "" ? "Connect wallet" : "PLAY"}
-                </a>
+                </button>
 
-                <a
+                <button
                     className="btn btn--center btn--wide"
                     onClick={openDeploymentModal}
                 >
                     <span>Deploy Server</span>
-                </a>
+                </button>
                 {/* 
                 <a className="" onClick={() => demoHud()}>
                     { address == '' ? "DEMO GAMEPLAY" : "Endless room" }

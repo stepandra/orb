@@ -1,4 +1,4 @@
-export const RPC_URL = 'https://rpc.tzkt.io/ghostnet'
+export const RPC_URL = 'https://rpc.tzkt.io/ghostnet';
 export const BASE_TZKT_API_URL = 'https://api.ghostnet.tzkt.io/v1';
 export const CONTRACT_ADDRESS = 'KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH'
 export const NFT_ADDRESS = 'KT1QUPuQYpqmfUZ7MtE9AhJ11n7ce1mKyyMB'
@@ -36,3 +36,6 @@ export const BOTS = [
         privateKey: process.env.BOT_7_PRIVATE_KEY,
     },
 ];
+
+export const IS_STAGING = process.env.NEXT_PUBLIC_IS_STAGING === "true";
+export const STAGING_SERVERS = [ "Orbitez-staging-FRA" ];

@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTezos } from "@hooks/useTezos";
 import { BigNumber } from "bignumber.js";
-import { CONTRACT_ADDRESS } from "../constants";
+import { CONTRACT_ADDRESS, IS_STAGING, STAGING_SERVERS } from "../constants";
 import { useSelectedServerContext } from '@context/SelectedServerContext';
 
 const useContractServers = () => {
@@ -23,7 +23,7 @@ const useContractServers = () => {
             rooms: serverRooms,
             players: serverPlayers
         } = serverData;
-        const mainRoom = serverRooms.get(serverName);
+        const mainRoom = serverRooms.get(`"${serverName}"`);
 
         // Checking if the server is full
         let isFull = false;
@@ -60,6 +60,15 @@ const useContractServers = () => {
 
             let contractServerList = [];
             for (let [serverName, serverData] of serverMap) {
+                const sanitazedServerName = serverName.replaceAll('"', "");
+
+                if (IS_STAGING && !STAGING_SERVERS.includes(sanitazedServerName)) {
+                    continue;
+                };
+                if (!IS_STAGING && STAGING_SERVERS.includes(sanitazedServerName)) {
+                    continue;
+                };
+
                 const serverRoomNames = serverData.rooms;
                 const roomMapOfServer = new Map();
                 serverRoomNames.forEach((roomName) => {
@@ -69,7 +78,7 @@ const useContractServers = () => {
                 const formattedServerData = {
                     ...serverData,
                     rooms: roomMapOfServer,
-                    name: serverName
+                    name: sanitazedServerName
                 };
                 const { isFull, isGameRunning } =
                     calculateServerState(formattedServerData);
@@ -88,9 +97,7 @@ const useContractServers = () => {
             }
 
             const savedServerIndex = contractServerList.findIndex(
-                (contractServer) => {
-                    contractServer.server_url === savedServerUrl;
-                }
+                (contractServer) => contractServer.server_url === savedServerUrl   
             );
 
             if (savedServerIndex === -1) {
@@ -120,9 +127,35 @@ const useContractServers = () => {
         setStatsUrl(selectedServerStatsUrl);
     }, [contractServers, selectedServerIndex]);
 
+    const next = useCallback(() => {
+        if (contractServers.length === selectedServerIndex + 1) {
+            setSelectedServerIndex(0);
+            return;
+        };
+
+        setSelectedServerIndex(selectedServerIndex + 1);
+    }, [contractServers, selectedServerIndex]);
+
+    const previous = useCallback(() => {
+        if (selectedServerIndex === 0) {
+            setSelectedServerIndex(contractServers.length - 1);
+            return;
+        };
+
+        setSelectedServerIndex(selectedServerIndex - 1);
+    }, [contractServers, selectedServerIndex]);
+
+    const isLoading = useMemo(
+        () => contractServers.length === 0 || selectedServerIndex === null,
+        [contractServers, selectedServerIndex]
+    );
+
     return {
+        isLoading,
         contractServers,
-        selectedServerIndex
+        selectedServerIndex,
+        next,
+        previous
     }
 };
 

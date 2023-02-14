@@ -161,9 +161,14 @@ select {
     //transition: all 1s ease-out;
 	//@include button(-size, -width, -height);
 
-	&:hover {
+	&:hover:not(:disabled) {
 		border-color: #FFF;
 		color: #FFF;
+	}
+
+	&:disabled {
+		opacity: 50%;
+		cursor: not-allowed;
 	}
 
 	&--wide {
