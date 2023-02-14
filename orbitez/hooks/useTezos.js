@@ -1,11 +1,11 @@
 import { TezosToolkit } from "@taquito/taquito";
 import { NetworkType } from "@airgap/beacon-sdk";
 import { useState, useEffect, useCallback } from "react";
-import { useAppContext } from "../pages/_app";
+import { useWalletContext } from "@context/WalletContext";
 import { MichelCodecPacker } from "@taquito/taquito";
 
 export function useTezos() {
-    const wallet = useAppContext();
+    const wallet = useWalletContext();
     const RPC_URL = "https://rpc.tzkt.io/ghostnet";
     const Tezos = new TezosToolkit(RPC_URL);
     Tezos.setPackerProvider(new MichelCodecPacker());
