@@ -9,7 +9,7 @@ import { Planet } from "@components/Planet/Planet";
 import { Header } from "@components/Header/Header";
 import usePlanet from "@hooks/usePlanet";
 import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
-import { useServerContext } from '@context/ServerContext';
+import { useSelectedServerContext } from '@context/SelectedServerContext';
 
 const signalR = require("@microsoft/signalr");
 axiosRetry(axios, { retries: 3, retryCondition: () => true });
@@ -27,7 +27,7 @@ export default function WaitingRoom() {
         setArePlanetScriptsReady
     } = usePlanet(mintHash);
 
-    const { serverName } = useServerContext();
+    const { serverName } = useSelectedServerContext();
 
     const refund = async () => {
         const contract = await Tezos.wallet.at(CONTRACT_ADDRESS);

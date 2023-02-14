@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTezos } from "@hooks/useTezos";
 import { BigNumber } from "bignumber.js";
 import { CONTRACT_ADDRESS } from "../constants";
-import { useServerContext } from '@context/ServerContext';
+import { useSelectedServerContext } from '@context/SelectedServerContext';
 
 const useContractServers = () => {
     const [contractServers, setContractServers] = useState([]);
@@ -15,7 +15,7 @@ const useContractServers = () => {
         setServerName,
         setServerUrl,
         setStatsUrl
-    } = useServerContext();
+    } = useSelectedServerContext();
 
     const calculateServerState = useCallback((serverData) => {
         const {

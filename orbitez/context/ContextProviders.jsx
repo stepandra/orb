@@ -1,11 +1,11 @@
 import React from 'react';
-import ServerProvider from './ServerProvider';
+import SelectedServerProvider from './SelectedServerProvider';
 
 const ContextProviders = ({ children }) => {
   return (
-    <ServerProvider>
-      {children}
-    </ServerProvider>
+      <SelectedServerProvider>
+          {children}
+      </SelectedServerProvider>
   );
 };
 

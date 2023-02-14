@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
 import useTimer from "@hooks/useTimer";
-import { useServerContext } from "@context/ServerContext";
+import { useSelectedServerContext } from "@context/SelectedServerContext";
 import { CONTRACT_ADDRESS } from "../constants";
 
 import Dialog from '@mui/material/Dialog';
@@ -28,7 +28,7 @@ export default function LastGameStats() {
 
     const router = useRouter();
 
-    const { serverName } = useServerContext();
+    const { serverName } = useSelectedServerContext();
     const { setTimer, remainingSeconds } = useTimer({ cancelOnUnmount: true });
 
     const { packed, signed, leaderboard } = router.query;

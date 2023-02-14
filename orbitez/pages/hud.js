@@ -14,7 +14,7 @@ import GameProgressTimer from "@components/GameProgressTimer/GameProgressTimer";
 import { route } from "next/dist/server/router";
 import useVirusAnimation from "@hooks/useVirusAnimation";
 
-import { useServerContext } from "@context/ServerContext";
+import { useSelectedServerContext } from "@context/SelectedServerContext";
 import RouteGuard from "@components/RouteGuard/RouteGuard";
 
 const signalR = require("@microsoft/signalr");
@@ -25,7 +25,7 @@ function Hud() {
     const [shouldRenderMain, setShouldRenderMain] = useState(false);
     const router = useRouter();
 
-    const { serverName, serverUrl, statsUrl } = useServerContext();
+    const { serverName, serverUrl, statsUrl } = useSelectedServerContext();
 
     useEffect(() => {
         const gateway =
@@ -266,7 +266,7 @@ function Hud() {
 };
 
 export default function ProtectedHud() {
-    const { serverUrl } = useServerContext();
+    const { serverUrl } = useSelectedServerContext();
     const [walletAddress, setWalletAddress] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
