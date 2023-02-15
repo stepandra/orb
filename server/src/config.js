@@ -87,8 +87,8 @@ module.exports = Object.seal({
 
   // [BORDER]
   // Border size (vanilla 14142.135623730952)
-  "borderWidth": 14142.135623730952,
-  "borderHeight": 14142.135623730952,
+  "borderWidth": 10000,
+  "borderHeight": 10000,
 
   // [FOOD]
   // foodMinSize: vanilla 10 (mass: 10*10/100: 1 mass)
