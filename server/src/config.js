@@ -39,7 +39,7 @@ module.exports = Object.seal({
   // serverRestart: Toggle whether you want your server to auto-restart in minutes. (set to 0 to disable)
   "serverTimeout": 300,
   "serverMaxConnections": 500,
-  "serverPort": 8080,
+  "serverPort": process.env.SERVER_PORT || 8080,
   "serverBind": "0.0.0.0",
   "serverTracker": 0,
   "serverGamemode": 0,
@@ -48,7 +48,7 @@ module.exports = Object.seal({
   "serverViewBaseY": 1080,
   "serverMinScale": 0.15,
   "serverSpectatorScale": 0.4,
-  "serverStatsPort": 88,
+  "serverStatsPort": process.env.STATS_PORT || 88,
   "serverStatsUpdate": 60,
   "mobilePhysics": 0,
   "badWordFilter": 1,

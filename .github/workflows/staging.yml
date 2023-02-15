@@ -1,10 +1,9 @@
 name: Orbitez Staging CD
+
 on:
   push:
     branches:
     - main
-    paths:
-    - 'orbitez/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -12,7 +11,7 @@ on:
 jobs:
 
   deploy:
-    name: Deployment to production
+    name: Deployment to staging
     runs-on: ubuntu-latest
     steps:
     - name: Deploying to staging via SSH
@@ -23,7 +22,7 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd ./orbitez-production/orbitez-secret/
+          cd ./orbitez-staging/orbitez-secret/
           git reset --hard
           git pull https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/stepandra/orbitez-secret.git
           cd ./orbitez
@@ -32,4 +31,7 @@ jobs:
           nvm use --lts=gallium
           npm i
           npm run build &&
-          pm2 reload Orbitez-production
+          pm2 reload Orbitez-staging
+          cd ../server
+          yarn
+          pm2 reload Orbitez-staging-server

@@ -1,8 +1,8 @@
 # orbitez
 
 P2E canvas game with NFT pass/skin and DeFi mechanics 
-1) Main page - https://staging.orbitez.io/
-2) Dashboard - https://staging.orbitez.io/dashboard
+1) Main page - https://orbitez.io/
+2) Dashboard - https://orbitez.io/dashboard
 
 ## Tech stack
 

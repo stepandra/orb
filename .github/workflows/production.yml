@@ -1,0 +1,30 @@
+name: Orbitez Production CI
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  deploy:
+    name: Deployment to production
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploying to production via SSH
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd ./orbitez-production/orbitez-secret/
+          git reset --hard
+          git pull https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/stepandra/orbitez-secret.git
+          cd ./orbitez
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
+          nvm use --lts=gallium
+          npm i
+          npm run build &&
+          pm2 reload Orbitez-production

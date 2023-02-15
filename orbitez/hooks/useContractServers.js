@@ -97,7 +97,7 @@ const useContractServers = () => {
             }
 
             const savedServerIndex = contractServerList.findIndex(
-                (contractServer) => contractServer.server_url === savedServerUrl   
+                (contractServer) => contractServer.server_url === savedServerUrl
             );
 
             if (savedServerIndex === -1) {
