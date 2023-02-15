@@ -14,8 +14,8 @@ const ServerSelector = () => {
         isLoading,
         contractServers,
         selectedServerIndex,
-        next,
-        previous
+        selectNextServer,
+        selectPreviousServer
     } = useContractServersContext();
 
     const loadingStateContent = useMemo(
@@ -43,7 +43,7 @@ const ServerSelector = () => {
         return (
             <>
                 <button
-                    onClick={next}
+                    onClick={selectNextServer}
                     className="server-selector__button"
                     disabled={areButtonsDisabled}
                 >
@@ -72,7 +72,7 @@ const ServerSelector = () => {
                     </ReactTooltip>
                 )}
                 <button
-                    onClick={previous}
+                    onClick={selectPreviousServer}
                     className="server-selector__button"
                     disabled={areButtonsDisabled}
                 >

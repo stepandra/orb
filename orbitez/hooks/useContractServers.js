@@ -127,7 +127,7 @@ const useContractServers = () => {
         setStatsUrl(selectedServerStatsUrl);
     }, [contractServers, selectedServerIndex]);
 
-    const next = useCallback(() => {
+    const selectNextServer = useCallback(() => {
         if (contractServers.length === selectedServerIndex + 1) {
             setSelectedServerIndex(0);
             return;
@@ -136,7 +136,7 @@ const useContractServers = () => {
         setSelectedServerIndex(selectedServerIndex + 1);
     }, [contractServers, selectedServerIndex]);
 
-    const previous = useCallback(() => {
+    const selectPreviousServer = useCallback(() => {
         if (selectedServerIndex === 0) {
             setSelectedServerIndex(contractServers.length - 1);
             return;
@@ -154,8 +154,8 @@ const useContractServers = () => {
         isLoading,
         contractServers,
         selectedServerIndex,
-        next,
-        previous
+        selectNextServer,
+        selectPreviousServer
     }
 };
 
