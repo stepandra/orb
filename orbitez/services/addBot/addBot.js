@@ -36,7 +36,7 @@ export default async function addBot(serverName) {
                 !pendingBotTransactions.isPendingTransactionConfirmed(serverName)
             ) {
                 reject({
-                    status: 500,
+                    status: 429,
                     json: {
                         error: "A request for the addition of a bot for this server has already been sent",
                     },
