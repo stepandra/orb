@@ -21,6 +21,7 @@ jobs:
           cd ./orbitez-production/orbitez-secret/
           git reset --hard
           git pull https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/stepandra/orbitez-secret.git
+          git fetch --prune
           cd ./orbitez
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
