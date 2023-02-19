@@ -127,11 +127,20 @@ window.main = () => {
     var vCloudNoise = [6, 30];
 
     function renderPlanet(sz) {
-        sz = Math.min((jQuery(window).innerWidth() - 960) * (0.65) - ((jQuery(window).innerWidth() - 960) * 0.02), 415) // || Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.40);
-        jQuery("#c").
-        css("width", sz + "px").css("height", sz + "px").
-        css("top", (jQuery(window).innerHeight() / 2 - jQuery("#c").height() / 2) + "px").
-        css("left", (jQuery(window).innerWidth() / 2 - jQuery("#c").width() / 2) + "px");
+        const { width: htmlElWidth, height: htmlElHeight } = document.documentElement.getBoundingClientRect();
+        sz = Math.min((htmlElWidth - 960) * (0.65) - ((htmlElHeight - 960) * 0.02), 415) // || Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.40);
+
+        const canvasElement = document.getElementById("c");
+        const canvasHeight = canvasElement.getBoundingClientRect().height;
+        const canvasWidth = canvasElement.getBoundingClientRect().width;
+
+        // Apply calculated styles
+        canvasElement.style.width = sz + "px";
+        canvasElement.style.height = sz + "px";
+        canvasElement.style.top = (htmlElHeight / 2 - canvasHeight / 2) + "px";
+        canvasElement.style.left = (htmlElWidth / 2 - canvasWidth / 2) + "px";
+
+        // Resize canvas
         resize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
@@ -230,10 +239,21 @@ window.main = () => {
 
     function renderMap(sz) {
         sz = sz || 1024;
-        jQuery("#c").
-        css("width", sz + "px").css("height", (sz / 2) + "px").
-        css("top", (jQuery(window).innerHeight() / 2 - jQuery("#c").height() / 2) + "px").
-        css("left", (jQuery(window).innerWidth() / 2 - jQuery("#c").width() / 2) + "px");
+
+
+        const { width: htmlElWidth, height: htmlElHeight } = document.documentElement.getBoundingClientRect();
+
+        const canvasElement = document.getElementById("c");
+        const canvasHeight = canvasElement.getBoundingClientRect().height;
+        const canvasWidth = canvasElement.getBoundingClientRect().width;
+
+        // Apply calculated styles
+        canvasElement.style.width = sz + "px";
+        canvasElement.style.height = (sz / 2) + "px";
+        canvasElement.style.top = (htmlElHeight / 2 - canvasHeight / 2) + "px";
+        canvasElement.style.left = (htmlElWidth / 2 - canvasWidth / 2) + "px";
+
+        // Resize canvas
         resize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
