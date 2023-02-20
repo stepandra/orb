@@ -176,6 +176,13 @@ select {
 		z-index: 50;
 	}
 
+	&--small {
+		font-size: 1rem;
+		min-width: auto;
+		padding: 1rem;
+		min-height: 3rem;
+	}
+
 	&__iconPlus {
 		display: block;
 		width: 38px;

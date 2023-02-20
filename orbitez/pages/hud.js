@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import Head from "next/head";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import { CONTRACT_ADDRESS } from "../constants";
 
 import { renderInner } from "@components/agar-client/agar-client-html";
 import InGameLeaderboard from "@components/InGameLeaderboard/InGameLeaderboard";
+import GameProgressTimer from "@components/GameProgressTimer/GameProgressTimer";
 import { route } from "next/dist/server/router";
 import useVirusAnimation from "@hooks/useVirusAnimation";
 
@@ -23,8 +24,6 @@ function Hud() {
     const [currentBlock, setCurrentBlock] = useState(0);
     const [shouldRenderMain, setShouldRenderMain] = useState(false);
     const router = useRouter();
-
-    const isMounted = useRef(false);
 
     const { serverName, serverUrl, statsUrl } = useServerContext();
 
@@ -56,12 +55,6 @@ function Hud() {
     );
 
     useEffect(() => {
-        isMounted.current = true;
-
-        return () => isMounted.current = false;
-    }, [])
-
-    useEffect(() => {
         let shouldRedirect = true;
 
         const redirectWithLeaderboard = async () => {
@@ -88,6 +81,8 @@ function Hud() {
     }, [currentBlock, isGameFinished]);
 
     useEffect(() => {
+        let isMounted = true;
+
         const renderMain = () => {
             const shouldRenderTimeout = setTimeout(() => {
                 setShouldRenderMain(true);
@@ -106,16 +101,22 @@ function Hud() {
             .build();
 
         async function init() {
-            if (!isMounted.current) return;
-
             // open connection
             await connection.start();
-            // subscribe to head
+            // subscribe to blocks
             await connection.invoke("SubscribeToBlocks");
         }
 
         // auto-reconnect
-        connection.onclose(init);
+        connection.onclose(() => {
+            // Preventing websocket connection from starting when the ...
+            // .. component is unmounted. This is necessary because ...
+            // .. onclose() method will be triggered even if the component ...
+            // ..has been unmounted.
+            if (!isMounted) return;
+            
+            init();
+        });
 
         connection.on("blocks", (msg) => {
             console.log("block", msg.state);
@@ -125,6 +126,7 @@ function Hud() {
         init();
 
         return () => {
+            isMounted = false;
             connection.off("SubscribeToBlocks");
             connection.stop();
             clearTimeout(windowInitTimeout);
