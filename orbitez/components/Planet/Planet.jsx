@@ -1,10 +1,8 @@
 import React from "react";
 import { Shaders } from "./Shaders";
 
-export function Planet({ isPlanetReady }) {
     return (
         <div className="planet">
-            <Shaders />
             {isPlanetReady || (
                 <p className="planet--loading-text">
                     Loading NFT, please wait...
