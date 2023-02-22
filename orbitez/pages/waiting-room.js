@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import Head from "next/head";
@@ -7,8 +7,6 @@ import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
 import { Planet } from "@components/Planet/Planet";
 import { Header } from "@components/Header/Header";
-import usePlanet from "@hooks/usePlanet";
-import { PlanetScripts } from "@components/PlanetScripts/PlanetScripts";
 import { useSelectedServerContext } from '@context/SelectedServerContext';
 
 const signalR = require("@microsoft/signalr");
@@ -21,11 +19,6 @@ export default function WaitingRoom() {
     const [roomSize, setRoomSize] = useState(-1);
     const [mintHash, setMintHash] = useState("");
     const router = useRouter();
-
-    const {
-        isPlanetInitialized,
-        setArePlanetScriptsReady
-    } = usePlanet(mintHash);
 
     const { serverName } = useSelectedServerContext();
 
@@ -190,7 +183,6 @@ export default function WaitingRoom() {
             <Head>
                 <title>Waiting room - Orbitez.io</title>
             </Head>
-            <PlanetScripts onScriptsReady={() => setArePlanetScriptsReady(true)} />
 
             <Header />
 
@@ -232,7 +224,7 @@ export default function WaitingRoom() {
 
                 <div className='page__center'>
                     <div className='planet__wrapper--flex-gap'>
-                        <Planet isPlanetReady={isPlanetInitialized} />
+                        <Planet mintHash={mintHash} />
 
                         <a className='btn btn--center' onClick={() => refund()}>
                             Leave room
