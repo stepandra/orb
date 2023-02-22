@@ -389,12 +389,10 @@ window.main = () => {
             rnd();
         };
 
-        Math.seedrandom();
         genFromID(id);
     }
 
     function genFromID(genID) {
-        Math.seedrandom(genID);
         console.log(genID);
         var result = doGen("planet")
         doDisplay(result);
