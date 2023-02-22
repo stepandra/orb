@@ -1,3 +1,4 @@
+const planetStruct = `
 struct planet
 slot nameStart
 slot nameEnd
@@ -3157,3 +3158,6 @@ famousShip SS Arrow
 famousShip SS Alpine
 famousShip SS Vixen
 famousShip SS Naiad
+`;
+
+export default planetStruct;
