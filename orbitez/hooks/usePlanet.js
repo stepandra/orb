@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import renderPlanet from "@services/planet/renderPlanet";
+import PlanetRender from "@services/planet/PlanetRender";
 
 const usePlanet = (mintHash, planetCanvasRef) => {
     const [isPlanetLoaded, setIsPlanetLoaded] = useState(false);
@@ -8,8 +8,12 @@ const usePlanet = (mintHash, planetCanvasRef) => {
         if (!mintHash) return;
 
         localStorage.setItem("fxHash", mintHash);
-        renderPlanet(mintHash, planetCanvasRef);
+        const planet = new PlanetRender(mintHash, planetCanvasRef);
+        planet.initAnimation();
+
         setIsPlanetLoaded(true);
+
+        return () => planet.stopAnimation();
     }, [ mintHash ]);
 
     return { isPlanetLoaded };
