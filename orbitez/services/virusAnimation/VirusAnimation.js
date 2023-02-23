@@ -1,13 +1,14 @@
 import { parseGIF, decompressFrames } from 'gifuct-js';
 
 class VirusAnimation {
-    constructor() {
+    constructor(fps = 10) {
         this.gif = null;
         this.frames = [];
         this.currentFrameIndex = 0;
         this.tempCanvas = document.createElement('canvas');
         this.tempCtx = this.tempCanvas.getContext('2d');
         this.latestFrameChangeTimestamp = null;
+        this.fps = fps;
     };
 
     async loadGif(gifURL) {
@@ -22,7 +23,7 @@ class VirusAnimation {
     };
 
     get currentFrame() {
-        // Drawing for the first frame
+        // Drawing for the first time
         if (!this.latestFrameChangeTimestamp) {
             this.drawFrameToCanvas();
             this.latestFrameChangeTimestamp = Date.now();
@@ -30,14 +31,15 @@ class VirusAnimation {
         };
 
         const elapsedTime = Date.now() - this.latestFrameChangeTimestamp;
+        const singleFrameValidityTime = 1000 / this.fps; // in ms
 
-        // If more than 100ms passed since frame change - requesting...
+        // If more than singleFrameValidityTime in ms passed since frame change - requesting...
         // .. frame change and drawing new frame
-        if (elapsedTime >= 100) {
+        if (elapsedTime >= singleFrameValidityTime) {
             this.requestFrameChange();
             this.drawFrameToCanvas();
         };
-        // If less than 100ms passed since frame change - returning the same frame
+        // If less than singleFrameValidityTime in ms since frame change - returning the same frame
 
         return this.tempCanvas;
     };
