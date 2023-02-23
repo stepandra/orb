@@ -13,6 +13,7 @@ import InGameLeaderboard from "@components/InGameLeaderboard/InGameLeaderboard";
 import GameProgressTimer from "@components/GameProgressTimer/GameProgressTimer";
 import { route } from "next/dist/server/router";
 import useVirusAnimation from "@hooks/useVirusAnimation";
+import usePlanetRender from "@hooks/usePlanetRender";
 
 import { useSelectedServerContext } from "@context/SelectedServerContext";
 import RouteGuard from "@components/RouteGuard/RouteGuard";
@@ -271,6 +272,7 @@ export default function ProtectedHud() {
     const [isLoading, setIsLoading] = useState(true);
 
     useVirusAnimation();
+    usePlanetRender();
 
     useEffect(() => {
         const localStorageWalletAddress = localStorage.getItem("tzAddress");

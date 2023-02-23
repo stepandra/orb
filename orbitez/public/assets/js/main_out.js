@@ -644,7 +644,7 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
     let quadtree;
     const settings = {
         nick: localStorage.getItem('tzAddress'),
-        skin: localStorage.getItem("skinLink"),
+        skin: localStorage.getItem("mintHash"),
         gamemode: '',
         showSkins: true,
         showNames: true,
@@ -1397,8 +1397,7 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
             if (!this.skin) {
                 return;
             }
-            const skin = new Image();
-            skin.src = this.skin;
+            const skin = new PlanetRender(this.skin);
             
             loadedSkins.set(this.skin, skin);
         }
@@ -1475,14 +1474,17 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
                 return;
             }
 
-            const skinImage = loadedSkins.get(this.skin);
-            if (settings.showSkins && this.skin && skinImage &&
-                skinImage.complete && skinImage.width && skinImage.height) {
+            if (settings.showSkins && this.skin) {
                 if (settings.fillSkin) ctx.fill();
+                const animatedPlanet = loadedSkins.get(this.skin);
+                const drawingSize = this.s * 2;
+                // Rendering 2x larger planet for improved resolution
+                // and using 10x speed
+                const animatedPlanetCanvas = animatedPlanet.getCurrentFrame(drawingSize * 2, 10);
                 ctx.save(); // for the clip
                 ctx.clip();
-                ctx.drawImage(skinImage, this.x - this.s * 2, this.y - this.s * 2,
-                    this.s * 4, this.s * 4);
+                ctx.drawImage(animatedPlanetCanvas, this.x - this.s, this.y - this.s,
+                    drawingSize, drawingSize);
                 ctx.restore();
             } else {
                 ctx.fill();
