@@ -20,7 +20,7 @@ export function Planet({ mintHash }) {
                         : ""
                 }`.trimEnd()}
             >
-                <canvas ref={planetCanvasRef} width="800" height="800"></canvas>
+                <canvas ref={planetCanvasRef}></canvas>
             </div>
         </div>
     );
