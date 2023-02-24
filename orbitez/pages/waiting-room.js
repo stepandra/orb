@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import Head from "next/head";
-import { CONTRACT_ADDRESS, MIN_BOT_JOIN_TIME, BASE_TZKT_API_URL } from "../constants";
+import { CONTRACT_ADDRESS, BOT_WAITING_DELAYS, BASE_TZKT_API_URL } from "../constants";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
 import { Planet } from "@components/Planet/Planet";
@@ -79,13 +79,27 @@ export default function WaitingRoom() {
             ).getTime();
     
             const currentTimestamp = Date.now();
-    
-            // Calculating whether MIN_BOT_JOIN_TIME have passed since the last player joined
-    
+
+            // Calculating the amount of bots on a current server
+            const currentServerBotsCount = BOTS.reduce((accumulator, currentBot) => {
+                const isBotOnServer = waitRoom.some(
+                    (serverPlayer) => serverPlayer.name === currentBot.address
+                );
+                if (isBotOnServer) {
+                    return accumulator + 1;
+                } else {
+                    return accumulator;
+                }
+            }, 0);
+
+            // Calculating whether minimum bot joining time have passed since the last player joined
+
             const timeElapsedSinceLastJoin = currentTimestamp - latestJoinedTimestamp;
+
+            const currBotMinJoinTime = BOT_WAITING_DELAYS[currentServerBotsCount];
     
-            if (timeElapsedSinceLastJoin < MIN_BOT_JOIN_TIME) {
-                setBotRequestDelay(MIN_BOT_JOIN_TIME - timeElapsedSinceLastJoin);
+            if (timeElapsedSinceLastJoin < currBotMinJoinTime) {
+                setBotRequestDelay(currBotMinJoinTime - timeElapsedSinceLastJoin);
             } else {
                 setBotRequestDelay(0);
             }

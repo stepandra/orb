@@ -4,7 +4,10 @@ export const CONTRACT_ADDRESS = 'KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz'
 export const NFT_ADDRESS = 'KT1QUPuQYpqmfUZ7MtE9AhJ11n7ce1mKyyMB'
 export const NFT_CONTRACT_ADDRESS = 'KT1AEVuykWeuuFX7QkEAMNtffzwhe1Z98hJS'
 
-export const MIN_BOT_JOIN_TIME = 120000; // 2 minutes in ms
+// Time (in ms) that need to pass before it will be possible to add a bot
+// Each value in the array corresponds to the waiting time to add the n-th  ...
+// .. bot on a single server 
+export const BOT_WAITING_DELAYS = [ 30000, 30000, 30000, 30000, 60000, 90000, 120000 ];
 
 export const BOTS = [
     {

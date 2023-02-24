@@ -2,7 +2,7 @@ import axios from "axios";
 import { TezosToolkit } from "@taquito/taquito";
 import {
     BOTS,
-    MIN_BOT_JOIN_TIME,
+    BOT_WAITING_DELAYS,
     RPC_URL,
     CONTRACT_ADDRESS,
     BASE_TZKT_API_URL,
@@ -122,22 +122,36 @@ export default async function addBot(serverName) {
 
             const currentTimestamp = Date.now();
 
-            // Calculating whether MIN_BOT_JOIN_TIME have passed since the last player joined
+            // Calculating the amount of bots on a current server
+            const currentServerBotsCount = BOTS.reduce((accumulator, currentBot) => {
+                const isBotOnServer = currentServerWaitRoomPlayers.some(
+                    (serverPlayer) => serverPlayer.name === currentBot.address
+                );
+                if (isBotOnServer) {
+                    return accumulator + 1;
+                } else {
+                    return accumulator;
+                }
+            }, 0);
+
+            // Calculating whether minimum bot joining time have passed since the last player joined
 
             const timeElapsedSinceLastJoin = currentTimestamp - latestJoinedTimestamp;
 
-            // If MIN_BOT_JOIN_TIME have not elapsed responding with an error
-            if (timeElapsedSinceLastJoin < MIN_BOT_JOIN_TIME) {
+            const currBotMinJoinTime = BOT_WAITING_DELAYS[currentServerBotsCount];
+
+            // If currBotMinJoinTime have not elapsed responding with an error
+            if (timeElapsedSinceLastJoin < currBotMinJoinTime) {
                 reject({
                     status: 500,
                     json: {
-                        error: "The required 2 minutes to add a bot have not yet passed",
+                        error: `The required waiting time to add a bot have not yet passed`,
                     },
                 });
                 return;
             }
 
-            // If MIN_BOT_JOIN_TIME have elapsed:
+            // If currBotMinJoinTime have elapsed:
             // Creating an availableBots array from the bots, who are not registered as players in the contract
             const availableBots = BOTS.filter(
                 (bot) => !contractPlayers.has(`"${bot.address}"`),
