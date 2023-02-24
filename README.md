@@ -65,8 +65,6 @@ We selected the top 10 IPFS gateway providers and perform a race-test. Whichever
 Fight with players from all over the world as you try to become the largest Planet in a solar system! Control your tiny planet and eat other players to grow larger. Mint your own, unique generative planet as NFT to enter the battlefield!
 
 
-Presentation: https://docs.google.com/presentation/d/1pYjczLbxw6lLJv-t_jSi37i-G3O2qyT-tT-gAGt_x-0/edit
-
 ## 💻 Quick start
 
 ### 1) Clone the repository
