@@ -24,8 +24,15 @@ Time in the game universe runs its course. Inevitably there appears technologica
 1) Mint or buy for 1tez unique orbitoid to get into game
 4) Enter battleground lobby with orbitoid NFT and choose bet type: tez or LP token (TODO)
 5) 80% goes to TOP 3 players at the time of baking the final block(1 round = 15 blocks in Tezos chain, but it's customazible) battleground bank
-7) 10-20% stay on smart-contract balance if we provide game server
-8) 0-10% goes to game server owner if he use 1-click game server deployment and game was on his server
+  - 1st place - 42% from bank
+  - 2nd place - 21% from bank
+  - 3rd place - 14% from bank
+  - first player who call "Claim all" - 3% from bank
+  - game server hoster - 10% from bank
+  - admin fee - 10% bank
+
+Illustration of a room for 3 people
+![bounty_explain](https://user-images.githubusercontent.com/4786779/221276002-f01650ff-9c59-4afd-99b0-4831c45cc50c.png)
 
 
 ## Game Server Deployments
