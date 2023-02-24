@@ -41,11 +41,27 @@ class Cell {
     }
     // Called to eat prey cell
     onEat(prey) {
+        let preyRadius = prey._radius2;
+
         if (!this.server.config.playerBotGrow) {
             if (this.radius >= 250 && prey.radius <= 41 && prey.type == 0)
                 prey._radius2 = 0; // Can't grow from players under 17 mass
         }
-        return this.setSize(Math.sqrt(this._radius2 + prey._radius2));
+
+        // If prey is food, foodMassEatingCoef is specified and differs from 1
+        if (
+            this.server.config.foodMassEatingCoef &&
+            this.server.config.foodMassEatingCoef !== 1 &&
+            prey.type === 1
+        ) {
+            // Multiplying food's mass value by foodMassEatingCoef
+            const foodMassEatingValue =
+                (Math.pow(preyRadius, 2) / 100) *
+                this.server.config.foodMassEatingCoef;
+
+            preyRadius = Math.sqrt(foodMassEatingValue * 100);
+        }
+        return this.setSize(Math.sqrt(this._radius2 + preyRadius));
     }
     // Boost cell
     setBoost(distance, angle) {

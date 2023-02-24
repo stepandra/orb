@@ -95,10 +95,13 @@ module.exports = Object.seal({
   // foodMaxSize: vanilla 20 (mass: 20*20/100: 4 mass)
   // foodAmount: The number of food to spawn
   // foodMassGrow: Enable food mass grow ?
+  // foodMassEatingCoef: Food eating mass multiplier - how much mass cells gain...
+  // .. from eating food (1: default, 2: two times more mass)
   "foodMinSize": 5,
   "foodMaxSize": 15,
   "foodAmount": 15000,
   "foodMassGrow": 1,
+  "foodMassEatingCoef": 1.5,
 
   // [VIRUSES]
   // virusMinSize: Minimum virus size. (vanilla: mass: val*val/100: 100 mass)
