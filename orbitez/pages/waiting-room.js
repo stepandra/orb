@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import Head from "next/head";
-import { CONTRACT_ADDRESS, BOT_WAITING_DELAYS, BASE_TZKT_API_URL } from "../constants";
+import { CONTRACT_ADDRESS, BOT_WAITING_DELAYS, BASE_TZKT_API_URL, BOTS } from "../constants";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
 import { Planet } from "@components/Planet/Planet";
