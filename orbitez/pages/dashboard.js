@@ -17,24 +17,6 @@ import ServerSelector from "@components/ServerSelector/ServerSelector";
 import { useSelectedServerContext } from "@context/SelectedServerContext";
 import { useContractServersContext } from "@context/ContractServersContext";
 
-const DEFAULT_GATEWAY = "gateway.ipfs.io";
-
-const IPFS_GATEWAYS = [
-    "gateway.ipfs.io",
-    "ipfs.io",
-    "infura-ipfs.io",
-    "cloudflare-ipfs.com",
-    "dweb.link",
-    "ipfs.fleek.co",
-    "ipfs.lain.la",
-    "nftstorage.link",
-    "ipfs.infura.io",
-    "ipfs.telos.miami",
-    "ipfs.eth.aragon.network",
-    "via0.com",
-    "gateway.pinata.cloud"
-];
-
 export default function Dashboard() {
     const { connectWallet, address, Tezos, isAuthLoaded } = useTezos();
     const router = useRouter();
@@ -58,61 +40,9 @@ export default function Dashboard() {
         };
     }, [contractServers, selectedServerIndex]);
 
-    // const [isDemoMode, setIsDemoMode] = useState(false);
-
-    useEffect(() => {
-        const promisify = (gateway) => {
-            return new Promise((resolve, reject) => {
-                try {
-                    axios
-                        .get(
-                            `https://${gateway}/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi`
-                        )
-                        .then((res) => {
-                            console.log(res.status);
-                            resolve(gateway);
-                        })
-                        .catch((e) => {
-                            console.log(e);
-                        });
-                } catch (e) {
-                    reject();
-                }
-            });
-        };
-
-        const ipfsRace = async () => {
-            const promiseList = [];
-    
-            for (let gateway of IPFS_GATEWAYS) {
-                promiseList.push(promisify(gateway));
-            }
-    
-            const winner = await Promise.race(promiseList);
-            localStorage.setItem("ipfs-gateway", winner);
-        };
-        
-        ipfsRace();
-    }, []);
-
-    const getGateway = useCallback(() => {
-        if (typeof window === "undefined") {
-            return DEFAULT_GATEWAY;
-        }
-
-        const localStorageGateway = localStorage.getItem("ipfs-gateway");
-
-        if (!localStorageGateway) {
-            return DEFAULT_GATEWAY;
-        }
-
-        return localStorageGateway;
-    }, []);
-
-    const getDemoPlanet = useCallback((gateway) => {
+    const getDemoPlanet = useCallback(() => {
         return {
             gen_hash: "ooKg2zuJu9XhZBRKQaBrEDvpeYZjDPmKREp3PMSZHLkoSFK3ejN",
-            img_link: `https://${gateway}/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi`,
             token_id: "DEMO PLANET"
         };
     }, []);
@@ -121,15 +51,13 @@ export default function Dashboard() {
         if (!isAuthLoaded) return;
 
         if (!address) {
-            const gateway = getGateway();
-            const demoPlanet = getDemoPlanet(gateway);
+            const demoPlanet = getDemoPlanet();
 
             setPlanetsAvailable([demoPlanet]);
             return;
         }
 
         const fetchPlanets = async () => {
-            const gateway = getGateway();
 
             fetch("https://api.fxhash.xyz/graphql", {
                 method: "POST",
@@ -149,16 +77,13 @@ export default function Dashboard() {
                     owners_ids.map((post) => {
                         if (post.owner.id == address) {
                             planets.push({
-                                img_link:
-                                    `https://${gateway}/ipfs` +
-                                    post.metadata.displayUri.slice(6),
                                 gen_hash: post.metadata.iterationHash,
                                 token_id: post.id
                             });
                         }
                     });
                     if (!planets.length) {
-                        const demoPlanet = getDemoPlanet(gateway);
+                        const demoPlanet = getDemoPlanet();
                         planets.push(demoPlanet);
                     }
                     setPlanetsAvailable(planets);
@@ -181,7 +106,6 @@ export default function Dashboard() {
 
         setMintHash(selected.gen_hash);
         localStorage.setItem("mintHash", selected.gen_hash);
-        localStorage.setItem("skinLink", selected.img_link);
     }, [planetSelected, planetsAvailable]);
 
     const connectAndReload = useCallback(() => {

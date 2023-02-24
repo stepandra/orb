@@ -28,18 +28,6 @@ function Hud() {
 
     const { serverName, serverUrl, statsUrl } = useSelectedServerContext();
 
-    useEffect(() => {
-        const gateway =
-            localStorage.getItem("ipfs-gateway") || "gateway.ipfs.io";
-        if (!localStorage.getItem("skinLink")) {
-            localStorage.setItem(
-                "skinLink",
-                `https://${gateway}/ipfs/QmaXjh2fxGMN4LmzmHMWcjF8jFzT7yajhbHn7yBN7miFGi`
-            );
-            router.reload();
-        }
-    }, []);
-
     const isGameFinished = useMemo(
         () => !!(currentBlock > 0 && endBlock > 0 && currentBlock >= endBlock),
         [currentBlock, endBlock]
