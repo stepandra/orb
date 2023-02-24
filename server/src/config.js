@@ -66,8 +66,8 @@ module.exports = Object.seal({
   "serverChat": 0,
   "serverChatAscii": 1,
   "separateChatForTeams": 0,
-  "serverName": "MultiOgarII #1",
-  "serverWelcome1": "Welcome to MultiOgarII!",
+  "serverName": "Orbitez.io",
+  "serverWelcome1": "Welcome to Orbitez.io!",
   "serverWelcome2": "",
   "clientBind": "",
 
@@ -99,7 +99,7 @@ module.exports = Object.seal({
   // .. from eating food (1: default, 2: two times more mass)
   "foodMinSize": 5,
   "foodMaxSize": 15,
-  "foodAmount": 15000,
+  "foodAmount": 7500,
   "foodMassGrow": 1,
   "foodMassEatingCoef": 1.5,
 
@@ -154,12 +154,12 @@ module.exports = Object.seal({
   // playerDisconnectTime: Time in seconds before a disconnected player's cell is removed from the server (Set to -1 to never remove)
   // splitVelocity: Velocity of splitting playercells (speed and distance)
   "playerMinSize": 31.6227766017,
-  "playerMaxSize": 400,
+  "playerMaxSize": 489.897948557,
   "playerMinSplitSize": 59.16079783,
   "playerMinEjectSize": 59.16079783,
   "playerStartSize": 31.6227766017,
-  "playerMaxCells": 16,
-  "playerSpeed": 1,
+  "playerMaxCells": 10,
+  "playerSpeed": 1.5,
   "playerDecayRate": 0.002,
   "playerDecayCap": 0,
   "playerRecombineTime": 30,
