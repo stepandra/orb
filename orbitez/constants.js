@@ -11,31 +11,31 @@ export const BOT_WAITING_DELAYS = [ 30000, 30000, 30000, 30000, 60000, 90000, 12
 
 export const BOTS = [
     {
-        address: process.env.BOT_1_ADDRESS,
+        address: process.env.NEXT_PUBLIC_BOT_1_ADDRESS,
         privateKey: process.env.BOT_1_PRIVATE_KEY,
     },
     {
-        address: process.env.BOT_2_ADDRESS,
+        address: process.env.NEXT_PUBLIC_BOT_2_ADDRESS,
         privateKey: process.env.BOT_2_PRIVATE_KEY,
     },
     {
-        address: process.env.BOT_3_ADDRESS,
+        address: process.env.NEXT_PUBLIC_BOT_3_ADDRESS,
         privateKey: process.env.BOT_3_PRIVATE_KEY,
     },
     {
-        address: process.env.BOT_4_ADDRESS,
+        address: process.env.NEXT_PUBLIC_BOT_4_ADDRESS,
         privateKey: process.env.BOT_4_PRIVATE_KEY,
     },
     {
-        address: process.env.BOT_5_ADDRESS,
+        address: process.env.NEXT_PUBLIC_BOT_5_ADDRESS,
         privateKey: process.env.BOT_5_PRIVATE_KEY,
     },
     {
-        address: process.env.BOT_6_ADDRESS,
+        address: process.env.NEXT_PUBLIC_BOT_6_ADDRESS,
         privateKey: process.env.BOT_6_PRIVATE_KEY,
     },
     {
-        address: process.env.BOT_7_ADDRESS,
+        address: process.env.NEXT_PUBLIC_BOT_7_ADDRESS,
         privateKey: process.env.BOT_7_PRIVATE_KEY,
     },
 ];
