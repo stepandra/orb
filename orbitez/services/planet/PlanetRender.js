@@ -71,8 +71,10 @@ class PlanetRender {
     };
 
     getCurrentFrame(size, speed) {
-        this.currentFrameTimestamp = new Date().getTime();
-        this.#render(size, speed);
+        if (this.currentFrameTimestamp + 100 < new Date().getTime()) {
+            this.currentFrameTimestamp = new Date().getTime();
+            this.#render(size, speed);
+        };
 
         return this.workingCanvas;
     };

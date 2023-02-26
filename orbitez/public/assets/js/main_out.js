@@ -1396,7 +1396,10 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
             this.skin = (value && value[0] === '%' ? value.slice(1) : value) || this.skin;
             if (!this.skin) {
                 return;
-            }
+            };
+
+            if (loadedSkins.has(this.skin)) return;
+
             const skin = new PlanetRender(this.skin);
             
             loadedSkins.set(this.skin, skin);
