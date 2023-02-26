@@ -1481,9 +1481,8 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
                 if (settings.fillSkin) ctx.fill();
                 const animatedPlanet = loadedSkins.get(this.skin);
                 const drawingSize = this.s * 2;
-                // Rendering 2x larger planet for improved resolution
-                // and using 10x speed
-                const animatedPlanetCanvas = animatedPlanet.getCurrentFrame(drawingSize * 2, 10);
+                // Rendering using 10x speed
+                const animatedPlanetCanvas = animatedPlanet.getCurrentFrame(drawingSize, 10);
                 ctx.save(); // for the clip
                 ctx.clip();
                 ctx.drawImage(animatedPlanetCanvas, this.x - this.s, this.y - this.s,
