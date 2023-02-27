@@ -1,7 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { TezosToolkit } from "@taquito/taquito";
 import { InMemorySigner } from "@taquito/signer";
-import { CONTRACT_ADDRESS, BASE_TZKT_API_URL } from "../../constants";
+import {
+    CONTRACT_ADDRESS,
+    BASE_TZKT_API_URL,
+    SHOULD_USE_DEV_SERVER
+} from "../../constants";
 import axios from "axios";
 import inMemoryCache from "memory-cache";
 
@@ -42,7 +46,7 @@ export default async function handler(req, res) {
     rawLeaderboard = inMemoryCache.get(serverName);
 
     if (rawLeaderboard == undefined) {
-        const result = await axios.get(`https://${statsUrl}`);
+        const result = await axios.get(`http${SHOULD_USE_DEV_SERVER ? "" : "s"}://${statsUrl}`);
         rawLeaderboard = result.data.leaderboard;
         // Only caching result when the game ended
         if (currentBlock === finishBlock) {
