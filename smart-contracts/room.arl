@@ -1,4 +1,4 @@
-archetype room(oracle_address:address)
+archetype room(oracle_address: address)
 
 asset player identified by id {
     id : address;
@@ -20,10 +20,9 @@ constant orb_address : address = @KT1VSEeZZ5SiKeUGmEf7Drh4tRinNzEUBEJg
 // constant oracle_address: address = @KT1HyswzE8Krz9PsMWEkfkJaUATrki8izjg7
 constant admin : address = @tz1W8RgHPiTDPqB5bGommn4QgJwMFuT3B1QF
 
-constant room_size : nat = 10
 constant bet_price : nat = 1
 constant game_duration : nat = 5
-variable sortido : list <address> = []
+
 
 enum betType = 
 | Tez
@@ -38,6 +37,7 @@ asset room identified by cid {
     bet_type : betType = Tez;
     size: nat;
     distance: nat;
+    total_bank: tez = 0tz;
 }
 
 asset server {
@@ -63,7 +63,8 @@ states =
 // }
 
 entry create_server (serverd : string, manag : address, room_idx : string, serverurl : string,  bet_size : tez, size_v: nat, game_duration_v: nat) {
-    room.add({cid =room_idx; bet_amount = bet_size; bet_type = Tez; size = size_v; distance = game_duration_v});
+    var total_bank_sum : tez = size_v*bet_size;
+    room.add({cid =room_idx; bet_amount = bet_size; bet_type = Tez; size = size_v; distance = game_duration_v; total_bank = total_bank_sum});
     server.add({sid=serverd; manager = manag; server_url = serverurl;rooms=[]});
     server[serverd].rooms.add(room_idx);
 }
@@ -80,7 +81,7 @@ entry enter_room (room_idv : string, serverid: string) {
         server[serverid].players.add(caller);
         // room[room_id].players.add(caller);
         
-        if server[serverid].players.count() = room[room_idv].size then room[room_idv].finish_block := level + game_duration
+        if server[serverid].players.count() = room[room_idv].size then room[room_idv].finish_block := level + room[room_idv].distance
     }
 }
 
@@ -137,6 +138,9 @@ entry end_game (room_idb : string, serverid : string, packed_outcome : bytes, si
         r10: level > room[room_idb].finish_block otherwise "GAME_STILL_ACTIVE";
     }
     effect {
+        var sortido : list <address> = [];
+        var bank = room[room_idb].total_bank;
+
         match call_view<list<address * nat>>(oracle_address, "getlist", (packed_outcome, signed_outcome)) with
             | some(res) -> 
               for item in res do
@@ -145,18 +149,19 @@ entry end_game (room_idb : string, serverid : string, packed_outcome : bytes, si
               done
             | none -> fail("FAILED_TO_CALL_VIEW")
         end;        
-
-        sortido := result.head(3).sort(desc(scoreh));
-        var first = balance;
+        
+        sortido := result.sort(desc(scoreh)).head(3);
 
         iter i from 1 to 3 do  
           var par :nat = int_to_nat(i-1) ? the : 0;
           match sortido.nth(par) with
-          | some(n) -> transfer (50% * first) to n
+          | some(n) -> transfer ((42% / i) * bank) to n
           | none -> fail ("EMPTY_LIST")
           end;
-          first := 50% * first
         done;
+        transfer (3% * bank) to caller;
+        transfer (10% * bank) to server[serverid].manager;
+        transfer (10% * bank) to admin;
         server[serverid].players.remove_all();
         player.remove_all();
         result.remove_all();
