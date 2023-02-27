@@ -40,12 +40,12 @@ function Hud() {
     }, []);
 
     const isGameFinished = useMemo(
-        () => !!(currentBlock && endBlock && currentBlock >= endBlock),
+        () => !!(currentBlock > 0 && endBlock > 0 && currentBlock >= endBlock),
         [currentBlock, endBlock]
     );
 
     const isGameLive = useMemo(
-        () => !!(currentBlock && endBlock && endBlock - currentBlock >= 0),
+        () => !!(currentBlock > 0 && endBlock > 0 && endBlock - currentBlock >= 0),
         [endBlock, currentBlock]
     );
 
