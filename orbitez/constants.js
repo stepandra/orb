@@ -1,6 +1,6 @@
 export const RPC_URL = 'https://rpc.tzkt.io/ghostnet';
 export const BASE_TZKT_API_URL = 'https://api.ghostnet.tzkt.io/v1';
-export const CONTRACT_ADDRESS = 'KT1C8WxkBZjD5cjkhcJDySyXL5QBR5xCy1oF'
+export const CONTRACT_ADDRESS = 'KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz'
 export const NFT_ADDRESS = 'KT1QUPuQYpqmfUZ7MtE9AhJ11n7ce1mKyyMB'
 export const NFT_CONTRACT_ADDRESS = 'KT1AEVuykWeuuFX7QkEAMNtffzwhe1Z98hJS'
 
