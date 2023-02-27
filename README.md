@@ -12,7 +12,7 @@ P2E canvas game with NFT pass/skin and DeFi mechanics
 - Testing: jest, completium-cli
 - Deploy: Docker, letsencrypt
 
-Smart-contract addrress: https://better-call.dev/ghostnet/KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH/operations
+Smart-contract addrress: https://better-call.dev/ghostnet/KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz/operations
 
 ## Game Universe
 
@@ -91,7 +91,7 @@ npm run dev
 ```
 Start dev server (backend):
 ```
-cd ./server && yarn && CONTRACT_ADDRESS='KT1WEVRHFcRq8n9iefMNm2s9P2gbB1d5gVzH' SERVER_NAME='NYC' node src/index.js
+cd ./server && yarn && CONTRACT_ADDRESS='KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz' SERVER_NAME='Orbitez-test-FRA' node src/index.js
 ```
 
 Boot up your local instance of the latest orbitez server and connect it to the room in contract you own.
