@@ -224,7 +224,7 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
 
     const WEBSOCKET_URL = null;
     const SKIN_URL = '/assets/skins/';
-    const USE_HTTPS = true; // false when using local server
+    const USE_HTTPS = !(localStorage.getItem("SHOULD_USE_DEV_SERVER") === "true"); // false when using local server
     const EMPTY_NAME = 'An unnamed cell';
     const QUADTREE_MAX_POINTS = 32;
     const CELL_POINTS_MIN = 5;

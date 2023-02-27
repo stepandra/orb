@@ -14,6 +14,8 @@ class Mode {
     }
     // Override these
     onServerInit(server) {
+        if (process.env.STAGE === "local") return;
+
         const signalR = require("@microsoft/signalr");
 
         const connection = new signalR.HubConnectionBuilder()
@@ -85,6 +87,8 @@ class Mode {
     }
 
     onTick(server) {
+        if (process.env.STAGE === "local") return;
+        
         const allowedPlayersSet = new Set(this.playersInRoom);
         const encounteredPlayers = new Map();
 

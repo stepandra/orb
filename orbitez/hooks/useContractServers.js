@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTezos } from "@hooks/useTezos";
 import { BigNumber } from "bignumber.js";
-import { CONTRACT_ADDRESS } from "../constants";
+import {
+    CONTRACT_ADDRESS,
+    SHOULD_USE_DEV_SERVER,
+    DEV_SERVER
+} from "../constants";
 import { useServerContext } from '@context/ServerContext';
 
 const useContractServers = () => {
@@ -101,6 +105,13 @@ const useContractServers = () => {
             setSelectedServerIndex(savedServerIndex);
         };
 
+        if (SHOULD_USE_DEV_SERVER) {
+            setContractServers([DEV_SERVER.data]);
+            setSelectedServerIndex(0);
+            sessionStorage.setItem("SHOULD_USE_DEV_SERVER", "true");
+            return;
+        };
+
         fetchServerList();
     }, []);
 
@@ -113,12 +124,19 @@ const useContractServers = () => {
         const selectedServerName = contractServers[selectedServerIndex].name;
         const sanitizedSelectedServerName = selectedServerName.replaceAll('"', "");
         const baseServerUrl = selectedServerUrl.match(/^(?:server.)(.*)/)?.[1];
-        const selectedServerStatsUrl = `stats.${baseServerUrl}`;
+        const selectedServerStatsUrl = SHOULD_USE_DEV_SERVER
+            ? DEV_SERVER.statsServerUrl
+            : `stats.${baseServerUrl}`;
 
         setServerName(sanitizedSelectedServerName);
         setServerUrl(selectedServerUrl);
         setStatsUrl(selectedServerStatsUrl);
     }, [contractServers, selectedServerIndex]);
+
+    // Setting env variable SHOULD_USE_DEV_SERVER for access from public/main_out.js file
+    useEffect(() => {
+        localStorage.setItem("SHOULD_USE_DEV_SERVER", SHOULD_USE_DEV_SERVER);
+    }, []);
 
     return {
         contractServers,

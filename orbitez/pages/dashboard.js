@@ -5,7 +5,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
 import usePlanet from "@hooks/usePlanet";
-import { CONTRACT_ADDRESS } from "../constants";
+import { CONTRACT_ADDRESS, SHOULD_USE_DEV_SERVER } from "../constants";
 
 import { Header } from "@components/Header/Header";
 import { Planet } from "@components/Planet/Planet";
@@ -196,6 +196,10 @@ export default function Dashboard() {
         }
     }, [Tezos, contractServers, selectedServerIndex]);
 
+    const joinDevServer = useCallback(() => {
+        router.push("/hud");
+    }, []);
+
     const openDeploymentModal = useCallback(async () => {
         if (!isAuthLoaded) return;
 
@@ -267,7 +271,8 @@ export default function Dashboard() {
 
                 <a
                     className="btn btn--center"
-                    onClick={address == "" ? connectAndReload : enterRoom}
+                    onClick={address == "" ? connectAndReload : SHOULD_USE_DEV_SERVER ? joinDevServer : enterRoom}
+
                 >
                     {address == "" ? "Connect wallet" : "PLAY"}
                 </a>
