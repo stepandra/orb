@@ -97,11 +97,11 @@ module.exports = Object.seal({
   // foodMassGrow: Enable food mass grow ?
   // foodMassEatingCoef: Food eating mass multiplier - how much mass cells gain...
   // .. from eating food (1: default, 2: two times more mass)
-  "foodMinSize": 5,
-  "foodMaxSize": 15,
-  "foodAmount": 7500,
+  "foodMinSize": 1,
+  "foodMaxSize": 25,
+  "foodAmount": 3000,
   "foodMassGrow": 1,
-  "foodMassEatingCoef": 1.5,
+  "foodMassEatingCoef": 3,
 
   // [VIRUSES]
   // virusMinSize: Minimum virus size. (vanilla: mass: val*val/100: 100 mass)
@@ -114,10 +114,10 @@ module.exports = Object.seal({
   // virusVelocity: Velocity of moving viruses (speed and distance)
   // virusMaxCells: Maximum cells a player is allowed to have from virus splits (0 for playerMaxCells)
   "virusMinSize": 100,
-  "virusMaxSize": 141.421356237,
+  "virusMaxSize": 100,
   "virusMaxPoppedSize": 60,
   "virusEqualPopSize": 0,
-  "virusAmount": 50,
+  "virusAmount": 30,
   "virusMaxAmount": 100,
   "motherCellMaxMass": 0,
   "virusVelocity": 780,

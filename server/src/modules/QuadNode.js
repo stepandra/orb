@@ -72,13 +72,16 @@ class QuadNode {
             if (bound.overlaps(item.bound) && callback(item.cell)) return true;
         return false;
     }
-    allOverlapped(bound) {
+    allOverlapped(bound, minSizeRequested = 1, foodMaxSizeConfig = 100) {
         const items = [];
         const nodes = [];
         let node = this;
         do {
             for (const item of node.items)
-                if (item.bound.overlaps(bound)) items.push(item.cell);
+                if (
+                    item.bound.overlaps(bound) &&
+                    item.cell._mass >= Math.min(foodMaxSizeConfig / 3, minSizeRequested / 3)
+                ) items.push(item.cell);
             for (const childNode of node.childNodes)
                 if (childNode.bound.overlaps(bound)) nodes.push(childNode);
         } while (node = nodes.pop());

@@ -192,7 +192,11 @@ class Player {
             this.centerPos.y + halfHeight
         );
         // update visible nodes
-        this.viewNodes = this.server.quadTree.allOverlapped(this.viewBox);
+        this.viewNodes = this.server.quadTree.allOverlapped(
+            this.viewBox, 
+            this._score / 500, 
+            this.server.config.foodMaxSize
+        );
         this.viewNodes.sort((a, b) => a.nodeId - b.nodeId);
     }
     sendUpdate() {
