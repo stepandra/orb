@@ -1,8 +1,13 @@
 # orbitez
 
 P2E canvas game with NFT pass/skin and DeFi mechanics 
-1) Main page - https://staging.orbitez.io/
-2) Dashboard - https://staging.orbitez.io/dashboard
+1) Main page:
+Staging - https://staging.orbitez.io
+Production - https://orbitez.io
+
+2) Dashboard:
+Staging - https://staging.orbitez.io/dashboard
+Production - https://orbitez.io/dashboard
 
 ## Tech stack
 
@@ -21,12 +26,14 @@ The speed in the game is measured not in minutes, but in hundreds of thousands o
 Time in the game universe runs its course. Inevitably there appears technologically advanced civilizations. Over time, the game will change Epoches. The initial set of planets represents the First Epoch of "natural planets". The Second Epoch of "wandering planets" will contain worlds modified by a technically advanced civilization. On them, you will find Space elevators, planetary engines, Bussard ramjets, etc. The Third Epoch of "artificial planets" will consist of fully artificial cosmic bodies, such as Dyson spheres and Ringworlds. 
 ## Transactions flow | Mechanics
 
-1) Mint or buy for 1tez unique orbitoid to get into game
-4) Enter battleground lobby with orbitoid NFT and choose bet type: tez or LP token (TODO)
-5) 80% goes to TOP 3 players at the time of baking the final block(1 round = 15 blocks in Tezos chain, but it's customazible) battleground bank
-7) 10-20% stay on smart-contract balance if we provide game server
-8) 0-10% goes to game server owner if he use 1-click game server deployment and game was on his server
+- Mint or buy for 1tez unique orbitoid to get into game. (you can play without planet. Game skin will be default planet)
+- Enter battleground lobby with orbitoid NFT and choose bet type: 1tez (production room size = 3 players, staging room size = 10 players with 7 bots. First 4 bots join after 30 second each, then 1 bot after 1 minute + 1 bot after 1.5 minutes + last bot after 2 minutes)
+- 77% goes to TOP 3 players at the time of baking the final block(1 round = 15 blocks in Tezos chain, but it's customazible) battleground bank
+- 3% goes to first player who call "Claim all"
+- 10% goes to admin address
+- 10% goes to game server owner if he use 1-click game server deployment and game was on his server
 
+![bounty_explain](https://user-images.githubusercontent.com/4786779/221579327-1c8abb2b-b75f-4c79-8f22-e8448f478d8f.png)
 
 ## Game Server Deployments
 Orbitez allows you to deploy your own game server and optionally a Tezos Node in one click on a cloud Provider of your choice (Currently fully supported are: DigitalOcean. In progress: AWS, GCP, Azure).
