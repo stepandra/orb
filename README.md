@@ -98,7 +98,7 @@ npm run dev
 ```
 Start dev server (backend):
 ```
-cd ./server && yarn && CONTRACT_ADDRESS='KT1C8WxkBZjD5cjkhcJDySyXL5QBR5xCy1oF' SERVER_NAME='NYC' node src/index.js
+cd ./server && yarn && CONTRACT_ADDRESS='KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz' SERVER_NAME='NYC' node src/index.js
 ```
 
 Boot up your local instance of the latest orbitez server and connect it to the room in contract you own.
