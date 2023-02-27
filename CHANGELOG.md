@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _No changes since latest release_
 
+## [0.2.1] - 2023-02-27
+
+### Changed
+
+- Updated contract address to: `KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz`;
+- Updated README.md.
+
 ## [0.2.0] - 2023-02-12
 
 ### Changed
@@ -60,6 +67,7 @@ _No changes since latest release_
 ### Changed
 - Updated README.md.
 
-[unreleased]: https://github.com/stepandra/orb/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/stepandra/orb/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/stepandra/orb/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/stepandra/orb/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/stepandra/orb/releases/tag/v0.0.1
+[0.1.0]: https://github.com/stepandra/orb/releases/tag/v0.1.0
