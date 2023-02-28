@@ -13,8 +13,7 @@ _No changes since latest release_
 
 ### Added
 
-- Implemented the ability to join local dev game server via usage of env variables;
-- New non-linear bot addition logic.
+- Implemented the ability to join local dev game server via usage of env variables.
 
 ## Fixed
 - Game progress timer receiving not valid data bug.
