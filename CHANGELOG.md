@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _No changes since latest release_
 
+## [0.2.2] - 2023-02-28
+
+### Added
+
+- Implemented the ability to join local dev game server via usage of env variables;
+- New non-linear bot addition logic.
+
+## Fixed
+- Game progress timer receiving not valid data bug.
+
 ## [0.2.1] - 2023-02-27
 
 ### Changed
@@ -67,7 +77,8 @@ _No changes since latest release_
 ### Changed
 - Updated README.md.
 
-[unreleased]: https://github.com/stepandra/orb/compare/v0.2.1...HEAD
+[unreleased]: https://github.com/stepandra/orb/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/stepandra/orb/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/stepandra/orb/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/stepandra/orb/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/stepandra/orb/releases/tag/v0.1.0
