@@ -1471,8 +1471,8 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
                 const skinImage = loadedSkins.get(FOOD_SKIN_SRC);
                 ctx.save(); // for the clip
                 ctx.clip();
-                ctx.drawImage(skinImage, this.x - this.s * 2, this.y - this.s * 2,
-                    this.s * 4, this.s * 4);
+                ctx.drawImage(skinImage, this.x - this.s, this.y - this.s,
+                    this.s * 2, this.s * 2);
                 ctx.restore();
                 return;
             }
