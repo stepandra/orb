@@ -2,6 +2,14 @@
 const FOOD_SKIN_SRC = "img/game-food.png";
 const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
 
+// Set these constants to values from server config
+const SERVER_MIN_SCALE = 0.6;
+const PLAYER_MAX_SIZE = 489.897948557;
+const PLAYER_MAX_CELLS = 10;
+//
+
+const SIZE_SCALE_COEF = Math.log(SERVER_MIN_SCALE) / Math.log(64 / (PLAYER_MAX_SIZE * PLAYER_MAX_CELLS));
+
 (function () {
     'use strict';
 
@@ -1218,7 +1226,7 @@ const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
             }
             camera.target.x = x / myCells.length;
             camera.target.y = y / myCells.length;
-            camera.sizeScale = Math.pow(Math.min(64 / s, 1), 0.4);
+            camera.sizeScale = Math.pow(Math.min(64 / s, 1), SIZE_SCALE_COEF);
             camera.target.scale = camera.sizeScale;
             camera.target.scale *= camera.viewportScale * camera.userZoom;
             camera.x = (camera.target.x + camera.x) / 2;

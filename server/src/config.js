@@ -46,7 +46,7 @@ module.exports = Object.seal({
   "serverBots": 0,
   "serverViewBaseX": 1920,
   "serverViewBaseY": 1080,
-  "serverMinScale": 0.15,
+  "serverMinScale": 0.6,
   "serverSpectatorScale": 0.4,
   "serverStatsPort": process.env.STATS_PORT || 88,
   "serverStatsUpdate": 60,
