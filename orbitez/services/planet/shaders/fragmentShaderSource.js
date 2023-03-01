@@ -3,6 +3,7 @@ const fragmentShaderSource = /* glsl */`
     precision highp float;
     #endif
 
+    uniform int background;
     uniform int cities;
     uniform float time;
     uniform float left;
@@ -117,8 +118,14 @@ const fragmentShaderSource = /* glsl */`
         float rot = time * rotspeed;
         p = mat2(cos(angle), sin(angle), -sin(angle), cos(angle)) * p;
     
+        float rdParam;
         vec3 ro = vec3( 0.0, 0.0, 2.25 );
-        vec3 rd = normalize( vec3( p, -2.0 ) );
+        if (background == 1) {
+            rdParam = -2.0;
+        } else {
+            rdParam = -2.12;
+        }
+        vec3 rd = normalize( vec3( p, rdParam ) );
 
         vec3 col = vec3(0.0);
 
@@ -176,7 +183,12 @@ const fragmentShaderSource = /* glsl */`
 
         //return vec4(col, smoothstep(0.0, 8.0 / resolution.x, h));
         //return vec4(clamp(col, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0)) * smoothstep(0.0, 8.0 / resolution.x, h) + haze * smoothstep(0.0, 30.0 / resolution.x, h + 0.1), smoothstep(0.0, 8.0 / resolution.x, h + 0.2));
-        float hazeAlpha = length(haze) * smoothstep(0.0, 30.0 / resolution.x, h + 0.1);
+        float hazeAlpha;
+        if (background == 1) {
+            hazeAlpha = length(haze) * smoothstep(0.0, 30.0 / resolution.x, h + 0.1);
+        } else {
+            hazeAlpha = 0.0;
+        }
         vec3 haze2 = normalize(haze);
         //vec4 out = vec4(clamp(col, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0)) * smoothstep(0.0, 8.0 / resolution.x, h), smoothstep(0.0, 8.0 / resolution.x, h));
         float solidity = smoothstep(0.0, 8.0 / resolution.x, h);

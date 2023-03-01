@@ -51,29 +51,29 @@ class PlanetRender {
         this.#initWebGl();
     };
 
-    #nextFrame() {
+    #nextFrame(...renderParams) {
         if (!this.isAnimationRunning) return;
         
         this.currentFrameTimestamp = new Date().getTime();
-        this.#render();
+        this.#render(...renderParams);
         requestAnimationFrame(() => this.#nextFrame());
     }
 
-    initAnimation(size, speed) {
+    initAnimation(...renderParams) {
         this.isAnimationRunning = true;
         this.currentFrameTimestamp = new Date().getTime();
-        this.#render(size, speed);
-        requestAnimationFrame(() => this.#nextFrame());
+        this.#render(...renderParams);
+        requestAnimationFrame(() => this.#nextFrame(...renderParams));
     }
 
     stopAnimation() {
         this.isAnimationRunning = false;
     };
 
-    getCurrentFrame(size, speed) {
+    getCurrentFrame(size, speed, background) {
         if (this.currentFrameTimestamp + 100 < new Date().getTime()) {
             this.currentFrameTimestamp = new Date().getTime();
-            this.#render(size, speed);
+            this.#render(size, speed, background);
         };
 
         return this.workingCanvas;
@@ -134,7 +134,7 @@ class PlanetRender {
         this.uHaze = this.gl.getUniformLocation(this.program, "haze");
     }
 
-    #render(sz, speed = 1) {
+    #render(sz, speed = 1, background = true) {
         const positionBuffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
         // three 2d points
@@ -187,6 +187,7 @@ class PlanetRender {
             offset
         );
 
+        this.gl.uniform1i(this.uBackground, background ? 1 : 0);
         this.gl.uniform1i(this.uCities, 0);
         this.gl.uniform1f(this.uTime, this.currentFrameTimestamp % 1000000 * 0.001 * speed); // qqDPS
         const shift = Math.round(sz / 40);

@@ -775,7 +775,7 @@ const SIZE_SCALE_COEF = Math.log(SERVER_MIN_SCALE) / Math.log(64 / (PLAYER_MAX_S
             "playSounds": false,
             "soundsVolume": 0.5,
             "moreZoom": false,
-            "fillSkin": true,
+            "fillSkin": false,
             "backgroundSectors": false,
             "jellyPhysics": false
         };
@@ -1490,7 +1490,7 @@ const SIZE_SCALE_COEF = Math.log(SERVER_MIN_SCALE) / Math.log(64 / (PLAYER_MAX_S
                 const animatedPlanet = loadedSkins.get(this.skin);
                 const drawingSize = this.s * 2;
                 // Rendering using 10x speed
-                const animatedPlanetCanvas = animatedPlanet.getCurrentFrame(drawingSize, 10);
+                const animatedPlanetCanvas = animatedPlanet.getCurrentFrame(drawingSize, 10, false);
                 ctx.save(); // for the clip
                 ctx.clip();
                 ctx.drawImage(animatedPlanetCanvas, this.x - this.s, this.y - this.s,
