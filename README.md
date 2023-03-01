@@ -1,39 +1,41 @@
 # orbitez
 
 P2E canvas game with NFT pass/skin and DeFi mechanics 
-1) Main page - https://orbitez.io/
-2) Dashboard - https://orbitez.io/dashboard
+1. **Main page**:
+  - Staging - https://staging.orbitez.io
+  - Production - https://orbitez.io
+
+2. **Dashboard**:
+  - Staging - https://staging.orbitez.io/dashboard
+  - Production - https://orbitez.io/dashboard
 
 ## Tech stack
 
-- Backend: Next.js
-- Frontend: React + Canvas
+- Back-end: Next.js
+- Front-end: React + Canvas
 - Smart-contracts: Archetype
 - Testing: jest, completium-cli
 - Deploy: Docker, letsencrypt
 
-Smart-contract addrress: https://better-call.dev/ghostnet/KT1JWdVKK3xJ6TFwEEHMofbmQDcvdVeNEZ1k/operations
+Smart-contract address:
+https://better-call.dev/ghostnet/KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz/operations
 
 ## Game Universe
 
-The player will have to take part in the process of forming solar systems. He will fight for survival by controlling a small little planet, which is gradually gaining mass by collecting particles of matter and other small celestial bodies.
+The player will have to take part in the process of forming solar systems. They will fight for survival by controlling a small little planet, which is gradually gaining mass by collecting particles of matter and other small celestial bodies.
 The speed in the game is measured not in minutes, but in hundreds of thousands of years. Thus, one match lasts about 100 thousand years.
-Time in the game universe runs its course. Inevitably there appears technologically advanced civilizations. Over time, the game will change Epoches. The initial set of planets represents the First Epoch of "natural planets". The Second Epoch of "wandering planets" will contain worlds modified by a technically advanced civilization. On them, you will find Space elevators, planetary engines, Bussard ramjets, etc. The Third Epoch of "artificial planets" will consist of fully artificial cosmic bodies, such as Dyson spheres and Ringworlds. 
+Time in the game universe runs its course. Inevitably there appears technologically advanced civilizations. Over time, the game will change Epoches. The initial set of planets represents the First Epoch of "natural planets". The Second Epoch of "wandering planets" will contain worlds modified by a technically advanced civilization. On them, you will find Space elevators, planetary engines, Bussard ramjets, etc. The Third Epoch of "artificial planets" will consist of fully artificial cosmic bodies, such as Dyson spheres and Ringworlds.
+
 ## Transactions flow | Mechanics
 
-1) Mint or buy for 1tez unique orbitoid to get into game
-4) Enter battleground lobby with orbitoid NFT and choose bet type: tez or LP token (TODO)
-5) 80% goes to TOP 3 players at the time of baking the final block(1 round = 15 blocks in Tezos chain, but it's customazible) battleground bank
-  - 1st place - 42% from bank
-  - 2nd place - 21% from bank
-  - 3rd place - 14% from bank
-  - first player who call "Claim all" - 3% from bank
-  - game server hoster - 10% from bank
-  - admin fee - 10% bank
+- Mint or buy a unique orbitoid for 1tez to get into the game (you can play without owning a planet, your game skin will be the default planet).
+- Enter battleground lobby with orbitoid NFT and choose bet type: 1tez (production room size = 3 players, staging room size = 10 players with 7 bots. First 4 bots join after 30 second each, then 1 bot after 1 minute + 1 bot after 1.5 minutes + last bot after 2 minutes).
+- 77% of the battleground bank goes to the TOP 3 players at the time of baking the final block (1 round = 15 blocks in Tezos chain, but it's customizable).
+- 3% goes to first player who called "Claim all".
+- 10% goes to admin address.
+- 10% goes to the owner of the server on which the game took place (use our [1-click game server deployment feature](#game-server-deployments) to have your own server!).
 
-Illustration of a room for 3 people
-![bounty_explain](https://user-images.githubusercontent.com/4786779/221276002-f01650ff-9c59-4afd-99b0-4831c45cc50c.png)
-
+![bounty_explain](https://user-images.githubusercontent.com/4786779/221579327-1c8abb2b-b75f-4c79-8f22-e8448f478d8f.png)
 
 ## Game Server Deployments
 Orbitez allows you to deploy your own game server and optionally a Tezos Node in one click on a cloud Provider of your choice (Currently fully supported are: DigitalOcean. In progress: AWS, GCP, Azure).
@@ -44,12 +46,12 @@ We leverage Docker hub to securely store images of the orbitez.io game server.
 
 ## Tezos node deployment
 Mainnet nodes are often overloaded and/or have high latencies and with many popular projects it gets nearly impossible to mint anything unless you're leveraging your own node.
-Our goal is to make deployment of your own Tezos node as simple as possible for the user. Tick a checkbox when deploying a game server with us and we'll bring up your very own Tezos node you can plug & play directly into your Temple wallet. All HTTPS certs are taken care of with use of Ngrok.io.
+Our goal is to make deployment of your own Tezos node as simple as possible for the user. Tick a checkbox when deploying a game server with us and we'll bring up your very own Tezos node you can plug & play directly into your Temple wallet. All HTTPS certs are taken care of by us: your own node will have a dedicated HTTPS endpoint based on the orbitez.io subdomain.
 
 ## Flex points / FAQs
 1. How do we prevent forgery of the leaderboard?
 
-We run a custom Oracle on the back end server which communicates with the game server and signs the leaderboard object. Front end only receives signed and packed encoded values of the game state when the game ends - this ensures consistency of data end to end.
+We run a custom Oracle on the back-end server which communicates with the game server and signs the leaderboard object. Front-end only receives signed and packed encoded values of the game state when the game ends - this ensures consistency of data end to end.
 
 2. How do we handle flakiness and slowness of IPFS gateways in global setup?
 
@@ -87,25 +89,51 @@ git clone https://github.com/stepandra/orb && cd orb
 ### 3) Build:
 
 ```
-cd ./orbitez && npm i && npm run build
+cd ./orbitez && npm i &&
+npm run build
 ```
+
+### 4) Start the app:
+
+```
+npm start -- -p 3000
+```
+
+The app will be available at http://localhost:3000
+
+Note: some functions will not be available in your local app instance since they require secret env variables:
+- bot addition feature;
+- 1-click game server deployment feature;
+- leaderbord signing at the end of the game.
+
 ### 4) (Optional) Run for development
 
-Start dev server (frontend):
-```
-npm install && cd orbitez && npm install
-npm run dev
-```
-Start dev server (backend):
-```
-cd ./server && yarn && CONTRACT_ADDRESS='KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz' SERVER_NAME='NYC' node src/index.js
-```
+- Start the dev server (Next.js):
+  ```
+  cd ./orbitez && npm i &&
+  npm run dev
+  ```
 
-Boot up your local instance of the latest orbitez server and connect it to the room in contract you own.
+  The app will be available at http://localhost:3000
+  
+- To start a local instance of a game server:
+  1. Enter the following commands:
+     ```
+     cd ./server && yarn &&
+     STAGE="local" node src/index.js
+     ```
+  2. Create an `.env` file in the `orbitez` directory with the following contents:
+     ```
+     NEXT_PUBLIC_STAGE=local
+     ```
+     
+  By clicking the "PLAY" button on the `/dashboard` page, you will be able to join your own local dev game server.
+  
 
-```
-docker run --env CONTRACT_ADDRESS=${contractAddress} --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 orbitez/orb-game-server-main:latest
-```
+- Or you can boot up a local instance of the latest release of the orbitez server and connect it to the room in contract you own:
+  ```
+  docker run --env CONTRACT_ADDRESS=KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz --env SERVER_NAME=${roomName} -d -p 8080:8080 -p 88:88 orbitez/orb-game-server-main:latest
+  ```
 
 ### 5) Contract tests
 #### Requirements:
@@ -175,5 +203,3 @@ npm test
   - Parameters
     - room_idn string
     - server_idn string
-    
-
