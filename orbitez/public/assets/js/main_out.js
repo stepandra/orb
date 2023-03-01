@@ -677,7 +677,7 @@ const SIZE_SCALE_COEF = Math.log(SERVER_MIN_SCALE) / Math.log(64 / (PLAYER_MAX_S
         moreZoom: false,
         fillSkin: false,
         backgroundSectors: false,
-        jellyPhysics: true,
+        jellyPhysics: false,
     };
     const pressed = {
         ' ': false,
@@ -777,7 +777,7 @@ const SIZE_SCALE_COEF = Math.log(SERVER_MIN_SCALE) / Math.log(64 / (PLAYER_MAX_S
             "moreZoom": false,
             "fillSkin": true,
             "backgroundSectors": false,
-            "jellyPhysics": true
+            "jellyPhysics": false
         };
         for (const prop in settings) {
             const elm = byId(prop.charAt(0) === '_' ? prop.slice(1) : prop);
