@@ -103,6 +103,7 @@ class PlanetRender {
 
         this.positionAttributeLocation = this.gl.getAttribLocation(this.program, "a_position");
     
+        this.uBackground = this.gl.getUniformLocation(this.program, "background");
         this.uCities = this.gl.getUniformLocation(this.program, "cities");
         this.uTime = this.gl.getUniformLocation(this.program, "time");
         this.uLeft = this.gl.getUniformLocation(this.program, "left");
