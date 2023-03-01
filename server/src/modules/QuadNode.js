@@ -80,7 +80,7 @@ class QuadNode {
             for (const item of node.items)
                 if (
                     item.bound.overlaps(bound) &&
-                    item.cell._mass >= Math.min(foodMaxSizeConfig / 3, minSizeRequested / 3)
+                    item.cell.radius >= Math.min(foodMaxSizeConfig, minSizeRequested)
                 ) items.push(item.cell);
             for (const childNode of node.childNodes)
                 if (childNode.bound.overlaps(bound)) nodes.push(childNode);
