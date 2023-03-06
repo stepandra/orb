@@ -10,7 +10,11 @@ import { Header } from "@components/Header/Header";
 import { useSelectedServerContext } from '@context/SelectedServerContext';
 
 const signalR = require("@microsoft/signalr");
-axiosRetry(axios, { retries: 3, retryCondition: () => true });
+axiosRetry(axios, {
+    retries: 3,
+    retryDelay: axiosRetry.exponentialDelay,
+    retryCondition: () => true
+});
 
 export default function WaitingRoom() {
     const { Tezos, address } = useTezos();
