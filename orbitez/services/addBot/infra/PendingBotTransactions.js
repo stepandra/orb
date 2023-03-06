@@ -6,7 +6,7 @@ class PendingBotTransactions {
         this.serverTransactionsMap = new Map();
     }
 
-    pushTransaction(serverName, transactionHash) {
+    setTransaction(serverName, transactionHash) {
         this.serverTransactionsMap.set(serverName, transactionHash);
     };
 

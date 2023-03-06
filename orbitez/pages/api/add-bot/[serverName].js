@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     try {
         const operationHash = await addBot(serverName);
         res.status(201).json({ operationHash });
-        console.log(`Successfully added a bot for server ${serverName}`);
+        console.log(`Successfully added a bot for server ${serverName}. Operation hash ${operationHash}`);
     } catch (error) {
         res.status(error.status).json(error.json);
         console.log(`Error adding a bot, for server ${serverName}. Status: ${error.status}, ${JSON.stringify(error.json)}`);

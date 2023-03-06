@@ -14,7 +14,7 @@ const requestAddingBot = (bot, serverName) => {
                 .send({ amount: 1 });
             
             const { hash } = operation;
-            pendingBotTransactions.pushTransaction(serverName, hash);
+            pendingBotTransactions.setTransaction(serverName, hash);
 
             await operation.confirmation().then(() => {
                 pendingBotTransactions.removeTransaction(serverName);
