@@ -3,7 +3,7 @@ const FOOD_SKIN_SRC = "img/game-food.png";
 const VIRUS_SKIN_SRC = "img/game-virus-anim.gif";
 
 // Set these constants to values from server config
-const SERVER_MIN_SCALE = 0.6;
+const SERVER_MIN_SCALE = 0.35;
 const PLAYER_MAX_SIZE = 489.897948557;
 const PLAYER_MAX_CELLS = 10;
 //
