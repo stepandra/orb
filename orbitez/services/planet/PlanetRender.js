@@ -5,16 +5,90 @@ import createShader from "./infra/createShader";
 import createProgram from "./infra/createProgram";
 import planetStruct from "./infra/planetStruct";
 
-class PlanetRender {
-    static #getWorkingCanvas(canvasRef) {
-        if (canvasRef?.current) {
-            return canvasRef.current
+class WebGlContext {
+    constructor(canvas = document.createElement("canvas")) {
+        this.canvas = canvas;
+        return this.#init();
+    };
+
+    #init() {
+        const gl = this.canvas.getContext("webgl", {
+            preserveDrawingBuffer: true,
+            premultipliedAlpha: false
+        });
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+        const program = createProgram(gl, vertexShader, fragmentShader);
+
+        const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+    
+        const uniformLocations = {
+            uBackground: gl.getUniformLocation(program, "background"),
+            uCities: gl.getUniformLocation(program, "cities"),
+            uTime: gl.getUniformLocation(program, "time"),
+            uLeft: gl.getUniformLocation(program, "left"),
+            uTop: gl.getUniformLocation(program, "top"),
+            uResolution: gl.getUniformLocation(program, "resolution"),
+            uAngle: gl.getUniformLocation(program, "angle"),
+            uRotspeed: gl.getUniformLocation(program, "rotspeed"),
+            uLight: gl.getUniformLocation(program, "light"),
+            uZLight: gl.getUniformLocation(program, "zLight"),
+            uLightColor: gl.getUniformLocation(program, "lightColor"),
+            uModValue: gl.getUniformLocation(program, "modValue"),
+            uNoiseOffset: gl.getUniformLocation(program, "noiseOffset"),
+            uNoiseScale: gl.getUniformLocation(program, "noiseScale"),
+            uNoiseScale2: gl.getUniformLocation(program, "noiseScale2"),
+            uNoiseScale3: gl.getUniformLocation(program, "noiseScale3"),
+            uCloudNoise: gl.getUniformLocation(program, "cloudNoise"),
+            uCloudiness: gl.getUniformLocation(program, "cloudiness"),
+            uOcean: gl.getUniformLocation(program, "ocean"),
+            uIce: gl.getUniformLocation(program, "ice"),
+            uCold: gl.getUniformLocation(program, "cold"),
+            uTemperate: gl.getUniformLocation(program, "temperate"),
+            uWarm: gl.getUniformLocation(program, "warm"),
+            uHot: gl.getUniformLocation(program, "hot"),
+            uSpeckle: gl.getUniformLocation(program, "speckle"),
+            uClouds: gl.getUniformLocation(program, "clouds"),
+            uWaterLevel: gl.getUniformLocation(program, "waterLevel"),
+            uRivers: gl.getUniformLocation(program, "rivers"),
+            uTemperature: gl.getUniformLocation(program, "temperature"),
+            uHaze: gl.getUniformLocation(program, "haze")
         };
-        return document.createElement("canvas");
+
+        return { gl, program, positionAttributeLocation, uniformLocations };
+    };
+};
+
+class WebGlContextSingleton {
+    static #instance;
+
+    constructor() {
+        throw new Error("Use WebGlContextSingleton.getInstance()");
+    };
+
+    static getInstance() {
+        if (!WebGlContextSingleton.#instance) {
+            WebGlContextSingleton.#instance = new WebGlContext();
+        }
+
+        return WebGlContextSingleton.#instance;
+    }
+};
+
+class PlanetRender  {
+    static #getWebGlContext(canvasRef) {
+        const canvas = canvasRef?.current;
+        if (canvas) {
+            return new WebGlContext(canvas);
+        };
+        return WebGlContextSingleton.getInstance();
     };
 
     constructor(planetHash, canvasRef) {
-        this.workingCanvas = PlanetRender.#getWorkingCanvas(canvasRef);
+        Object.assign(this, PlanetRender.#getWebGlContext(canvasRef));
+        this.sharedWebGlCanvas = this.gl.canvas;
+        this.cacheCanvas = document.createElement('canvas');
+        this.cacheCtx = this.cacheCanvas.getContext('2d');
         this.isAnimationRunning = false;
         this.structs = {};
         this.slots = {};
@@ -48,7 +122,6 @@ class PlanetRender {
         
         this.#doParse(planetStruct);
         this.#doDisplay();
-        this.#initWebGl();
     };
 
     #nextFrame(...renderParams) {
@@ -74,9 +147,10 @@ class PlanetRender {
         if (this.currentFrameTimestamp + 100 < new Date().getTime()) {
             this.currentFrameTimestamp = new Date().getTime();
             this.#render(size, speed, background);
+            return this.sharedWebGlCanvas;
         };
 
-        return this.workingCanvas;
+        return this.cacheCanvas;
     };
 
     #resize(canvas) {
@@ -90,49 +164,6 @@ class PlanetRender {
             canvas.width = displayWidth;
             canvas.height = displayHeight;
         }
-    }
-
-    #initWebGl() {
-        this.gl = this.workingCanvas.getContext("webgl", {
-            preserveDrawingBuffer: true,
-            premultipliedAlpha: false
-        });
-        const vertexShader = createShader(this.gl, this.gl.VERTEX_SHADER, vertexShaderSource);
-        const fragmentShader = createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentShaderSource);
-        this.program = createProgram(this.gl, vertexShader, fragmentShader);
-
-        this.positionAttributeLocation = this.gl.getAttribLocation(this.program, "a_position");
-    
-        this.uBackground = this.gl.getUniformLocation(this.program, "background");
-        this.uCities = this.gl.getUniformLocation(this.program, "cities");
-        this.uTime = this.gl.getUniformLocation(this.program, "time");
-        this.uLeft = this.gl.getUniformLocation(this.program, "left");
-        this.uTop = this.gl.getUniformLocation(this.program, "top");
-        this.uResolution = this.gl.getUniformLocation(this.program, "resolution");
-        this.uAngle = this.gl.getUniformLocation(this.program, "angle");
-        this.uRotspeed = this.gl.getUniformLocation(this.program, "rotspeed");
-        this.uLight = this.gl.getUniformLocation(this.program, "light");
-        this.uZLight = this.gl.getUniformLocation(this.program, "zLight");
-        this.uLightColor = this.gl.getUniformLocation(this.program, "lightColor");
-        this.uModValue = this.gl.getUniformLocation(this.program, "modValue");
-        this.uNoiseOffset = this.gl.getUniformLocation(this.program, "noiseOffset");
-        this.uNoiseScale = this.gl.getUniformLocation(this.program, "noiseScale");
-        this.uNoiseScale2 = this.gl.getUniformLocation(this.program, "noiseScale2");
-        this.uNoiseScale3 = this.gl.getUniformLocation(this.program, "noiseScale3");
-        this.uCloudNoise = this.gl.getUniformLocation(this.program, "cloudNoise");
-        this.uCloudiness = this.gl.getUniformLocation(this.program, "cloudiness");
-        this.uOcean = this.gl.getUniformLocation(this.program, "ocean");
-        this.uIce = this.gl.getUniformLocation(this.program, "ice");
-        this.uCold = this.gl.getUniformLocation(this.program, "cold");
-        this.uTemperate = this.gl.getUniformLocation(this.program, "temperate");
-        this.uWarm = this.gl.getUniformLocation(this.program, "warm");
-        this.uHot = this.gl.getUniformLocation(this.program, "hot");
-        this.uSpeckle = this.gl.getUniformLocation(this.program, "speckle");
-        this.uClouds = this.gl.getUniformLocation(this.program, "clouds");
-        this.uWaterLevel = this.gl.getUniformLocation(this.program, "waterLevel");
-        this.uRivers = this.gl.getUniformLocation(this.program, "rivers");
-        this.uTemperature = this.gl.getUniformLocation(this.program, "temperature");
-        this.uHaze = this.gl.getUniformLocation(this.program, "haze");
     }
 
     #render(sz, speed = 1, background = true) {
@@ -153,16 +184,16 @@ class PlanetRender {
         };
 
         // Apply calculated styles
-        this.workingCanvas.height = sz;
-        this.workingCanvas.width = sz;
-        this.workingCanvas.style.width = sz + "px";
-        this.workingCanvas.style.height = sz + "px";
+        this.sharedWebGlCanvas.height = sz;
+        this.sharedWebGlCanvas.width = sz;
+        this.sharedWebGlCanvas.style.width = sz + "px";
+        this.sharedWebGlCanvas.style.height = sz + "px";
 
         if (!sz) {
             // Resize canvas
-            this.#resize(this.gl.canvas);
+            this.#resize(this.sharedWebGlCanvas);
         }
-        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+        this.gl.viewport(0, 0, this.sharedWebGlCanvas.width, this.sharedWebGlCanvas.height);
 
         // Clear the canvas
         this.gl.clearColor(0, 0, 0, 0);
@@ -188,44 +219,62 @@ class PlanetRender {
             offset
         );
 
-        this.gl.uniform1i(this.uBackground, background ? 1 : 0);
-        this.gl.uniform1i(this.uCities, 0);
-        this.gl.uniform1f(this.uTime, this.currentFrameTimestamp % 1000000 * 0.001 * speed); // qqDPS
+        this.gl.uniform1i(this.uniformLocations.uBackground, background ? 1 : 0);
+        this.gl.uniform1i(this.uniformLocations.uCities, 0);
+        this.gl.uniform1f(this.uniformLocations.uTime, this.currentFrameTimestamp % 1000000 * 0.001 * speed); // qqDPS
         const shift = Math.round(sz / 40);
-        this.gl.uniform1f(this.uLeft, -shift);
-        this.gl.uniform1f(this.uTop, -shift);
+        this.gl.uniform1f(this.uniformLocations.uLeft, -shift);
+        this.gl.uniform1f(this.uniformLocations.uTop, -shift);
         const res = Math.round(sz * 0.95);
-        this.gl.uniform2f(this.uResolution, res, res);
-        this.gl.uniform1f(this.uAngle, this.planetParams.vAngle);
-        this.gl.uniform1f(this.uRotspeed, this.planetParams.vRotspeed);
-        this.gl.uniform1f(this.uLight, this.planetParams.vLight);
-        this.gl.uniform1f(this.uZLight, this.planetParams.vZLight);
-        this.gl.uniform3fv(this.uLightColor, this.planetParams.vLightColor);
-        this.gl.uniform1f(this.uModValue, this.planetParams.vModValue);
-        this.gl.uniform2fv(this.uNoiseOffset, this.planetParams.vNoiseOffset);
-        this.gl.uniform2fv(this.uNoiseScale, this.planetParams.vNoiseScale);
-        this.gl.uniform2fv(this.uNoiseScale2, this.planetParams.vNoiseScale2);
-        this.gl.uniform2fv(this.uNoiseScale3, this.planetParams.vNoiseScale3);
-        this.gl.uniform2fv(this.uCloudNoise, this.planetParams.vCloudNoise);
-        this.gl.uniform1f(this.uCloudiness, this.planetParams.vCloudiness);
-        this.gl.uniform3fv(this.uOcean, this.planetParams.vOcean);
-        this.gl.uniform3f(this.uIce, 250 / 255.0, 250 / 255.0, 250 / 255.0);
-        this.gl.uniform3fv(this.uCold, this.planetParams.vCold); //53/255.0, 102/255.0, 100/255.0);
-        this.gl.uniform3fv(this.uTemperate, this.planetParams.vTemperate); //79/255.0, 109/255.0, 68/255.0);
-        this.gl.uniform3fv(this.uWarm, this.planetParams.vWarm); //119/255.0, 141/255.0, 82/255.0);
-        this.gl.uniform3fv(this.uHot, this.planetParams.vHot); //223/255.0, 193/255.0, 148/255.0);
-        this.gl.uniform3fv(this.uSpeckle, this.planetParams.vSpeckle);
-        this.gl.uniform3fv(this.uClouds, this.planetParams.vClouds);
-        this.gl.uniform3fv(this.uHaze, this.planetParams.vHaze);
-        this.gl.uniform1f(this.uWaterLevel, this.planetParams.vWaterLevel);
-        this.gl.uniform1f(this.uRivers, this.planetParams.vRivers);
-        this.gl.uniform1f(this.uTemperature, this.planetParams.vTemperature);
+        this.gl.uniform2f(this.uniformLocations.uResolution, res, res);
+        this.gl.uniform1f(this.uniformLocations.uAngle, this.planetParams.vAngle);
+        this.gl.uniform1f(this.uniformLocations.uRotspeed, this.planetParams.vRotspeed);
+        this.gl.uniform1f(this.uniformLocations.uLight, this.planetParams.vLight);
+        this.gl.uniform1f(this.uniformLocations.uZLight, this.planetParams.vZLight);
+        this.gl.uniform3fv(this.uniformLocations.uLightColor, this.planetParams.vLightColor);
+        this.gl.uniform1f(this.uniformLocations.uModValue, this.planetParams.vModValue);
+        this.gl.uniform2fv(this.uniformLocations.uNoiseOffset, this.planetParams.vNoiseOffset);
+        this.gl.uniform2fv(this.uniformLocations.uNoiseScale, this.planetParams.vNoiseScale);
+        this.gl.uniform2fv(this.uniformLocations.uNoiseScale2, this.planetParams.vNoiseScale2);
+        this.gl.uniform2fv(this.uniformLocations.uNoiseScale3, this.planetParams.vNoiseScale3);
+        this.gl.uniform2fv(this.uniformLocations.uCloudNoise, this.planetParams.vCloudNoise);
+        this.gl.uniform1f(this.uniformLocations.uCloudiness, this.planetParams.vCloudiness);
+        this.gl.uniform3fv(this.uniformLocations.uOcean, this.planetParams.vOcean);
+        this.gl.uniform3f(this.uniformLocations.uIce, 250 / 255.0, 250 / 255.0, 250 / 255.0);
+        this.gl.uniform3fv(this.uniformLocations.uCold, this.planetParams.vCold); //53/255.0, 102/255.0, 100/255.0);
+        this.gl.uniform3fv(this.uniformLocations.uTemperate, this.planetParams.vTemperate); //79/255.0, 109/255.0, 68/255.0);
+        this.gl.uniform3fv(this.uniformLocations.uWarm, this.planetParams.vWarm); //119/255.0, 141/255.0, 82/255.0);
+        this.gl.uniform3fv(this.uniformLocations.uHot, this.planetParams.vHot); //223/255.0, 193/255.0, 148/255.0);
+        this.gl.uniform3fv(this.uniformLocations.uSpeckle, this.planetParams.vSpeckle);
+        this.gl.uniform3fv(this.uniformLocations.uClouds, this.planetParams.vClouds);
+        this.gl.uniform3fv(this.uniformLocations.uHaze, this.planetParams.vHaze);
+        this.gl.uniform1f(this.uniformLocations.uWaterLevel, this.planetParams.vWaterLevel);
+        this.gl.uniform1f(this.uniformLocations.uRivers, this.planetParams.vRivers);
+        this.gl.uniform1f(this.uniformLocations.uTemperature, this.planetParams.vTemperature);
 
         const primitiveType = this.gl.TRIANGLES;
         const drawArraysOffset = 0;
         const count = 6;
         this.gl.drawArrays(primitiveType, drawArraysOffset, count);
+
+        this.#drawToCache(sz);
     };
+
+    #drawToCache(sz) {
+        // Apply size to cache canvas
+        this.cacheCanvas.height = sz;
+        this.cacheCanvas.width = sz;
+        this.cacheCanvas.style.width = sz + "px";
+        this.cacheCanvas.style.height = sz + "px";
+
+        this.cacheCtx.drawImage(
+            this.sharedWebGlCanvas,
+            0,
+            0,
+            this.sharedWebGlCanvas.width,
+            this.sharedWebGlCanvas.height
+        );
+    }
 
     #doParse(text) {
         let struct = null;
