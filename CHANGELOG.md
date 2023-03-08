@@ -9,6 +9,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _No changes since the latest release._
 
+## [0.3.3] - 2023-03-08
+
+### Changed
+
+- Refactored planet rendering:
+  - Implemented the ability to render multiple different planets at the same time;
+  - Added the ability to render directly into a custom canvas (via passing of the canvas element ref);
+  - Added the ability to render by-frame into internal (not mounted) canvas with specified parameters and returning the canvas for custom drawing;
+  - Improved `<Planet />` component, which now can be used without any preliminary setup, by simply providing a `mintHash` prop;
+  - Improved `<PlanetDataList />` component;
+  - Redesigned planet rendering initialization and getting of planet features to be fully synchronous instead of asynchronous;
+  - Added the ability to render a planet without a background and take 100% of the width and height of the canvas;
+- Game optimizations to ensure stable high FPS:
+  - Implemented usage of shared single WebGl context to improve performance;
+  - Implemeted reusing of a single planet render for all smaller planet cells;
+  - Implemented limiting amount of food cells to be rendered on a large zoom out;
+  - Limited max zoom-out;
+  - Optimized food skin rendering;
+  - Implemented limiting of planet rendering FPS animation;
+  - Disabled jelly physics;
+- Server config:
+  - Max zoom out changed from 0.15 to 0.35;
+  - Min food size changed from 5 to 1;
+  - Max food size changed from 15 to 25;
+  - Food amount reduced from 15000 to 3000;
+  - Eating food gives 3 times more of foods original mass;
+  - Amount of virus cells changed from 50 to 30;
+  - Max size of player increased from 400 to 489.897948557;
+  - Max cells of player reduced from 16 to 10;
+  - Player speed increased by 1.5 times (1 -> 1.5).
+
+### Added
+
+- Animated planets in-game.
+
+### Removed
+
+- jQuery dependency;
+- seedRandom dependency;
+- Loading of skins via IPFS.
+
+## Fixed
+
+- Bots requests retries sometimes failing bug;
+- Game progress timer optimistic updates exceeding the limits bug.
+
 ## [0.3.2] - 2023-02-28
 
 ### Added
@@ -17,6 +63,7 @@ _No changes since the latest release._
 - New non-linear bot addition logic.
 
 ## Fixed
+
 - Game progress timer receiving not valid data bug.
 
 ## [0.3.1] - 2023-02-27
@@ -74,6 +121,7 @@ _No changes since the latest release._
 - Implemented the ability to join local dev game server via usage of env variables.
 
 ## Fixed
+
 - Game progress timer receiving not valid data bug.
 
 ## [0.2.1] - 2023-02-27
@@ -126,6 +174,7 @@ _No changes since the latest release._
 ## [0.1.0] - 2023-01-16
 
 ### Changed
+
 - Updated README.md.
 
 ### Added
@@ -134,7 +183,8 @@ _No changes since the latest release._
 - Food & virus skins;
 - Game Progress Timer.
 
-[unreleased]: https://github.com/stepandra/orb/compare/v0.3.2...HEAD
+[unreleased]: https://github.com/stepandra/orb/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/stepandra/orb/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/stepandra/orb/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/stepandra/orb/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/stepandra/orb/compare/v0.2.2...v0.3.0
