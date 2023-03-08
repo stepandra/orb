@@ -50,7 +50,7 @@ _No changes since the latest release._
 - seedRandom dependency;
 - Loading of skins via IPFS.
 
-## Fixed
+### Fixed
 
 - Bots requests retries sometimes failing bug;
 - Game progress timer optimistic updates exceeding the limits bug.
@@ -62,7 +62,7 @@ _No changes since the latest release._
 - Implemented the ability to join local dev game server via usage of env variables;
 - New non-linear bot addition logic.
 
-## Fixed
+### Fixed
 
 - Game progress timer receiving not valid data bug.
 
@@ -120,7 +120,7 @@ _No changes since the latest release._
 
 - Implemented the ability to join local dev game server via usage of env variables.
 
-## Fixed
+### Fixed
 
 - Game progress timer receiving not valid data bug.
 
