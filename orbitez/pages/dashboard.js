@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTezos } from "@hooks/useTezos";
-import usePlanet from "@hooks/usePlanet";
 import { CONTRACT_ADDRESS, SHOULD_USE_DEV_SERVER } from "../constants";
 
 import { Header } from "@components/Header/Header";
