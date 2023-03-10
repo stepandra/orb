@@ -1,11 +1,19 @@
 archetype room(oracle_address: address)
 
+constant orb_address : address = @KT1VSEeZZ5SiKeUGmEf7Drh4tRinNzEUBEJg
+// constant oracle_address: address = @KT1HyswzE8Krz9PsMWEkfkJaUATrki8izjg7
+constant admin : address = @tz1W8RgHPiTDPqB5bGommn4QgJwMFuT3B1QF
+constant bet_price : nat = 1
+
+// Storage -----------------------------------------  
+
 asset player identified by id {
     id : address;
     score: nat = 0;
     entry_block: nat;
     room_id : string;
 }
+
 asset result identified by idh {
     idh : address;
     scoreh: nat;
@@ -16,25 +24,10 @@ asset leaderboard identified by player_id {
     total_score: nat = 0;
 }
 
-constant orb_address : address = @KT1VSEeZZ5SiKeUGmEf7Drh4tRinNzEUBEJg
-// constant oracle_address: address = @KT1HyswzE8Krz9PsMWEkfkJaUATrki8izjg7
-constant admin : address = @tz1W8RgHPiTDPqB5bGommn4QgJwMFuT3B1QF
-
-constant bet_price : nat = 1
-constant game_duration : nat = 5
-
-
-enum betType = 
-| Tez
-| Orb
-| OrbLP
-| OtherLP
-
 asset room identified by cid {
     cid : string;
     finish_block  : nat = 0;
     bet_amount : tez;
-    bet_type : betType = Tez;
     size: nat;
     distance: nat;
     total_bank: tez = 0tz;
@@ -48,23 +41,11 @@ asset server {
     players: aggregate<player> = [];
 }   
 
-states = 
-| Created initial
-| InProgress
-| Done
-| Closed
-| Refunded
-
-// entry create_room (room_id : string,) {
-//     called by admin
-//     effect {
-        // room.add({cid =room_id;server_id=[{ sid="YS3ED48E5Y3070016"; manager=@tz1W8RgHPiTDPqB5bGommn4QgJwMFuT3B1QF;server_url="https://ngrok.cock"}]; bet_amount = bet_size; bet_type = Tez; size = size_v; distance = game_duration_v})
-//     }
-// }
+// Entries -----------------------------------------
 
 entry create_server (serverd : string, manag : address, room_idx : string, serverurl : string,  bet_size : tez, size_v: nat, game_duration_v: nat) {
     var total_bank_sum : tez = size_v*bet_size;
-    room.add({cid =room_idx; bet_amount = bet_size; bet_type = Tez; size = size_v; distance = game_duration_v; total_bank = total_bank_sum});
+    room.add({cid =room_idx; bet_amount = bet_size; size = size_v; distance = game_duration_v; total_bank = total_bank_sum});
     server.add({sid=serverd; manager = manag; server_url = serverurl;rooms=[]});
     server[serverd].rooms.add(room_idx);
 }
@@ -79,8 +60,6 @@ entry enter_room (room_idv : string, serverid: string) {
     effect {
         player.add({ id = caller; entry_block = level; room_id = room_idv});
         server[serverid].players.add(caller);
-        // room[room_id].players.add(caller);
-        
         if server[serverid].players.count() = room[room_idv].size then room[room_idv].finish_block := level + room[room_idv].distance
     }
 }
@@ -92,7 +71,6 @@ entry refund (room_idq : string, server_id : string) {
         r5: room[room_idq].finish_block = 0 otherwise "NO_REFUND_AFTER_START"
     }
     effect {
-        // player.remove(caller);
         server[server_id].players.remove(caller);
         player.remove(caller);
         if (not server[server_id].players.contains(caller)) then transfer (bet_price * 1tz) to caller;
@@ -113,6 +91,7 @@ entry remove_room (room_idn : string, server_idn : string) {
     called by server[server_idn].manager
     effect {
         server[server_idn].rooms.remove(room_idn);
+        room.remove(room_idn);
     }
 }
 
@@ -120,13 +99,6 @@ entry destroy_server (server_idx : string) {
     called by admin
     effect {
         server.remove(server_idx);    
-    }
-}
-
-entry claim_fees() {
-    called by admin
-    effect {
-        transfer balance to admin
     }
 }
 
