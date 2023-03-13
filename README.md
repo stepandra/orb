@@ -162,7 +162,10 @@ Install node packages in root directory:
 ```
 npm i
 ```
-
+Create .env file with `ORACLE_PRIVATE_KEY` and `ORACLE_PUBLIC_KEY` variables:
+```
+touch .env && echo "ORACLE_PRIVATE_KEY=''" >> .env && echo "ORACLE_PUBLIC_KEY=''" >> .env
+```
 Run test
 ```
 npm run test-contracts
