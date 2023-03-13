@@ -17,8 +17,11 @@ P2E canvas game with NFT pass/skin and DeFi mechanics
 - Testing: jest, completium-cli
 - Deploy: Docker, letsencrypt
 
-Smart-contract address:
-https://better-call.dev/ghostnet/KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz/operations
+Smart-contract address (old one):
+~~https://better-call.dev/ghostnet/KT1QQnpFLKtUwLDTPofnudfPdmCuBmtmQkrz/operations~~
+
+Smart-contract address (actual, connected to orbitez.io):
+https://better-call.dev/ghostnet/KT1WRAucboJ8yD7fFtEpS7vJ1bVs9qaLvm8Q/operations
 
 ## Game Universe
 
@@ -64,7 +67,7 @@ We selected the top 10 IPFS gateway providers and perform a race-test. Whichever
 - [x] Animated Orbitoid(planet) in action!
 - [ ] Play with your own FA2 NFT as a skin in orbitez game (hold 100 ORB token to unlock this feature)
 - [ ] ORB token farming (incentivize farmers to bet in LP as good as players to farm with ORB rewards)
-- [ ] Liquidity Baking LP(SIRIUS) bets
+- [ ] Liquidity Baking LP(SIRS) bets
 - [ ] Proof of leaderboard (Merkle tree -> own tzstamp server). 
 - [ ] Each block send tx with merkle tree of all player key events in the game
 - [ ] Federative servers(matrix protocol or simmilar) with state replication 
@@ -160,21 +163,20 @@ Install node packages in root directory:
 npm i
 ```
 
-Set mockup mode in completium-cli:
-```
-completium-cli mockup init --protocol PtKathmankSpLLDALzWw7CGD2j2MtyveTwboEYokqUCP4a1LxMg
-```
 Run test
 ```
-npm test
+npm run test-contracts
 ```
 <img width="649" alt="Снимок экрана 2023-01-03 в 23 32 55" src="https://user-images.githubusercontent.com/4786779/210452341-35f8e86b-19f6-4cea-8680-d6a400390998.png">
 
 
 ## Contract entrypoints
-- `claim_fees` - claim all contract balance [admin]
 - `clear_all` -  clear all assets except `leaderboard` [admin]
 - `destroy_server` - remove selected server from storage [admin]
+- `remove_room` - remove selected room on server [server_manager]
+  - Parameters
+    - room_idn string
+    - server_idn string
 - `create_server`
   - Parameters
     - serverd string
@@ -199,7 +201,3 @@ npm test
   - Parameters
     - room_idq string
     - server_id string
-- `remove_room`
-  - Parameters
-    - room_idn string
-    - server_idn string
