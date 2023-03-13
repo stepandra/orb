@@ -1,9 +1,12 @@
 {
   "dependencies": {
     "@completium/completium-cli": "^0.4.53",
+    "@taquito/signer": "^15.1.0",
+    "@taquito/taquito": "^15.1.0",
+    "dotenv": "^16.0.3",
     "mocha": "^10.0.0"
   },
-  "name": "orbitez-secret",
+  "name": "orb",
   "description": "P2E canvas game with NFT pass/skin and DeFi mechanics",
   "version": "1.0.0",
   "main": "index.js",
@@ -16,17 +19,18 @@
     "jest": "^29.0.3"
   },
   "scripts": {
-    "test": "jest"
+    "test-contracts": "completium-cli mockup init --protocol PtKathmankSpLLDALzWw7CGD2j2MtyveTwboEYokqUCP4a1LxMg && npm test",
+    "test": "jest test_room"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stepandra/orbitez-secret.git"
+    "url": "git+https://github.com/stepandra/orb"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/stepandra/orbitez-secret/issues"
+    "url": "https://github.com/stepandra/orb/issues"
   },
-  "homepage": "https://github.com/stepandra/orbitez-secret#readme"
+  "homepage": "https://github.com/stepandra/orb#readme"
 }
