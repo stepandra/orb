@@ -1,11 +1,9 @@
-archetype oraclesetvalue
+archetype oraclesetvalue (oracle_public_key : key)
 
 variable outview : list<address * nat> = []
-// oracle's public key
-constant oracle : key = "edpku2jGfeBS8X8axF5nSsduvwdA8Qq9mVhWjp3uTcQ4EMhbowsL7H"
 
 view getlist (packed_outcome:bytes, signed_outcome: signature) : list<address * nat> {
-  if check_signature(oracle, signed_outcome, packed_outcome) then (
+  if check_signature(oracle_public_key, signed_outcome, packed_outcome) then (
     return match unpack<list<address * nat>>(packed_outcome) with
       | some(s) -> s
       | none -> outview
